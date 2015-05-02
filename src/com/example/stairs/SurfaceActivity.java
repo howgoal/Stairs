@@ -1,5 +1,6 @@
 package com.example.stairs;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -21,8 +22,17 @@ public class SurfaceActivity extends SurfaceView implements
 	private Timer timer;
 	private TimerTask task;
 	private int xPosition, yPosition;
-	private int[] X = new int[50];
-	private int[] Y = new int[50];
+	private int xSheep = 180, ySheep = 20;
+	private int wSheep = 78, hSheep = 78;
+	private int wSteps = 140, hSteps = 50;
+	private int speedUp = 1, speedDown = 1;
+	private int gap = 250;
+	private int tmp_hit = 0, hit = 0;
+	private boolean change = false;
+	
+	ArrayList <Integer> xList;
+	ArrayList <Integer> yList;
+
 
 	public SurfaceActivity(Context context) {
 		super(context);
@@ -31,39 +41,59 @@ public class SurfaceActivity extends SurfaceView implements
 		surfHold = getHolder();
 		surfHold.addCallback(this);
 		// setFocusable(true);
-		
+		xList = new ArrayList<Integer>();
+		yList = new ArrayList<Integer>();
 		countX();
 		countY();
 
 	}
 
 	private void countX() {
-		X[0] = 30;
+		xList.add(130);
 		for(int i=1; i<50; i++) {
 			xPosition = (int) (Math.random() * 300 + 10);
-			X[i] = xPosition;
+			xList.add(xPosition);
 		}
 	}
 	
 	private void countY() {
-		int tmp;
-		Y[0] = 50;
+		yList.add(gap);
 		for(int i=1; i<50; i++) {
-			tmp = Y[i-1] + 100;
-			yPosition = (int) (Math.random() * 30 + tmp);
-			Y[i] = yPosition;
+			gap = gap + 100;
+			yPosition = (int) (Math.random() * 30 )+ gap;
+			yList.add(yPosition);
+		}
+	}
+	
+	public void checkOn() {
+		for(int i=0; i<10; i++) {
+			if(Math.abs(ySheep+hSheep - yList.get(i)) < 2) {
+				if(xSheep-xList.get(i) <= wSteps-20 && -hSheep+30 <= xSheep-xList.get(i)) {
+					Log.i("up", "up");
+					ySheep -= speedUp;
+					hit++;
+				}
+			}
+		}
+		if(hit == tmp_hit) {
+			ySheep += speedDown;
+		}
+		else{
+			tmp_hit = hit;
 		}
 	}
 
 	public void draw() {
 		Canvas canvas = getHolder().lockCanvas();
 		Resources res = getResources();
-		Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.img);
+		Bitmap steps = BitmapFactory.decodeResource(res, R.drawable.img);
+		Bitmap sheep = BitmapFactory.decodeResource(res, R.drawable.sheep);
 		Paint paint = new Paint();
 		paint.setAntiAlias(true); // remove edge effect
 		canvas.drawColor(Color.WHITE);
+		canvas.drawBitmap(sheep, xSheep, ySheep, paint);
 		for(int i=0; i<10; i++) {
-			canvas.drawBitmap(bitmap, X[i], Y[i], paint);
+			canvas.drawBitmap(steps, xList.get(i), yList.get(i), paint);
 		}
 
 		getHolder().unlockCanvasAndPost(canvas);
@@ -75,12 +105,18 @@ public class SurfaceActivity extends SurfaceView implements
 			@Override
 			public void run() {
 				draw();
-				for(int i=0; i<10; i++) {
-					Y[i] = Y[i] - 3;
+				for(int i=0; i<yList.size(); i++) {
+					yList.set(i, yList.get(i) - speedUp);
+					if(yList.get(i) < 0) {
+						yList.remove(i);
+						xList.remove(i);
+						//Log.i("remove", "ok");
+					}
 				}
+				checkOn();
 			}
 		};
-		timer.schedule(task, 100, 100); // do task per 0.1 second
+		timer.schedule(task, 1, 1); // do task per 0.1 second
 	}
 
 	public void stopTimer() {
