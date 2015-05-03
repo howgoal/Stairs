@@ -5,7 +5,10 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,9 +19,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 public class SurfaceActivity extends SurfaceView implements
@@ -36,7 +41,7 @@ public class SurfaceActivity extends SurfaceView implements
 	private int gap = 250;
 	private int tmp_hit = 0, hit = 0;
 	private int point = 0;
-	private boolean direct = true;
+	private boolean direct = true, end = false;
 
 	ArrayList<Integer> xList;
 	ArrayList<Integer> yList;
@@ -84,16 +89,17 @@ public class SurfaceActivity extends SurfaceView implements
 				if (xSheep - xList.get(i) <= wSteps - 20
 						&& -hSheep + 30 <= xSheep - xList.get(i)) {
 					// Log.i("up", "up");
-					if(stepList.get(i) == 0) {
+					if (stepList.get(i) == 0) {
 						onGrass.set(i, true);
 						point++;
 					} else {
 						hit++;
 						ySheep -= speedUp;
 					}
-					
-					if(stepList.get(i) == 1) {
+
+					if (stepList.get(i) == 1) {
 						onGate.set(i, true);
+						point--;
 					}
 				}
 			}
@@ -114,15 +120,22 @@ public class SurfaceActivity extends SurfaceView implements
 		}
 	}
 
+	public void checkEnd() {
+		int deadline = this.getHeight();
+		if (ySheep + 70 == deadline) {
+			end = true;
+		}
+	}
+
 	public void draw() {
 		Canvas canvas = getHolder().lockCanvas();
 		Resources res = getResources();
 		Bitmap steps = BitmapFactory.decodeResource(res, R.drawable.img);
 		Bitmap grass = BitmapFactory.decodeResource(res, R.drawable.grass);
 		Bitmap gate = BitmapFactory.decodeResource(res, R.drawable.gate);
-		Bitmap back =  BitmapFactory.decodeResource(res, R.drawable.back);
-		Bitmap plus =  BitmapFactory.decodeResource(res, R.drawable.plus);
-		Bitmap minus =  BitmapFactory.decodeResource(res, R.drawable.minus);
+		Bitmap back = BitmapFactory.decodeResource(res, R.drawable.back);
+		Bitmap plus = BitmapFactory.decodeResource(res, R.drawable.plus);
+		Bitmap minus = BitmapFactory.decodeResource(res, R.drawable.minus);
 		Bitmap left_sheep = BitmapFactory.decodeResource(res,
 				R.drawable.left_sheep);
 		Bitmap right_sheep = BitmapFactory.decodeResource(res,
@@ -133,17 +146,19 @@ public class SurfaceActivity extends SurfaceView implements
 
 		for (int i = 0; i < yList.size(); i++) {
 			if (stepList.get(i) == 0) { // on grass
-				if(onGrass.get(i) == false) {
+				if (onGrass.get(i) == false) {
 					canvas.drawBitmap(grass, xList.get(i), yList.get(i), paint);
 				} else {
 					canvas.drawBitmap(back, xList.get(i), yList.get(i), paint);
-					canvas.drawBitmap(plus, xList.get(i) + 60 , yList.get(i), paint);
+					canvas.drawBitmap(plus, xList.get(i) + 60, yList.get(i),
+							paint);
 				}
-				
+
 			} else if (stepList.get(i) == 1) { // on gate
 				canvas.drawBitmap(gate, xList.get(i), yList.get(i), paint);
-				if(onGate.get(i) == true) {
-					canvas.drawBitmap(minus, xList.get(i) + 20 , yList.get(i)-70, paint);
+				if (onGate.get(i) == true) {
+					canvas.drawBitmap(minus, xList.get(i) + 20,
+							yList.get(i) - 70, paint);
 				}
 			} else { // normal
 				canvas.drawBitmap(steps, xList.get(i), yList.get(i), paint);
@@ -177,6 +192,20 @@ public class SurfaceActivity extends SurfaceView implements
 					}
 				}
 				checkOn();
+				checkEnd();
+				if (end == true) {
+					stopTimer();
+//					new Thread() {
+//						public void run() {
+//							runOnUiThread(new Runnable() {
+//								public void run() {
+//									// Do your UI operations like dialog opening
+//									// or Toast here
+//								}
+//							});
+//						}
+//					}.start();
+				}
 			}
 		};
 		timer.schedule(task, 1, 1); // do task per 0.001 second
