@@ -34,11 +34,11 @@ public class SurfaceActivity extends SurfaceView implements
 	private Timer timer;
 	private TimerTask task;
 	private int xPosition, yPosition;
-	private int xSheep = 180, ySheep = 20;
+	private int xSheep = 180, ySheep = 220;
 	private int wSheep = 78, hSheep = 78;
 	private int wSteps = 140, hSteps = 50;
 	private int speedUp = 1, speedDown = 1;
-	private int gap = 250;
+	private int gap = 300;
 	private int tmp_hit = 0, hit = 0;
 	private int point = 0;
 	private boolean direct = true, end = false;
@@ -112,7 +112,8 @@ public class SurfaceActivity extends SurfaceView implements
 	}
 
 	public void setStep() {
-		for (int i = 0; i < 50; i++) {
+		stepList.add(2);
+		for (int i = 1; i < 50; i++) {
 			int tmp = (int) (Math.random() * 5); // random 0~4
 			stepList.add(tmp);
 			onGrass.add(false);
@@ -122,15 +123,17 @@ public class SurfaceActivity extends SurfaceView implements
 
 	public void checkEnd() {
 		int deadline = this.getHeight();
-		if (ySheep + 70 == deadline) {
+		if (ySheep + 70 == deadline || ySheep == 65) {
 			end = true;
 		}
+		//Log.e(String.valueOf(this.getHeight()), String.valueOf(this.getWidth()));
 	}
 
 	public void draw() {
 		Canvas canvas = getHolder().lockCanvas();
 		Resources res = getResources();
 		Bitmap steps = BitmapFactory.decodeResource(res, R.drawable.img);
+		Bitmap line = BitmapFactory.decodeResource(res, R.drawable.deadline);
 		Bitmap grass = BitmapFactory.decodeResource(res, R.drawable.grass);
 		Bitmap gate = BitmapFactory.decodeResource(res, R.drawable.gate);
 		Bitmap back = BitmapFactory.decodeResource(res, R.drawable.back);
@@ -143,6 +146,7 @@ public class SurfaceActivity extends SurfaceView implements
 		Paint paint = new Paint();
 		paint.setAntiAlias(true); // remove edge effect
 		canvas.drawColor(Color.WHITE);
+		canvas.drawBitmap(line, 0, 0, paint);
 
 		for (int i = 0; i < yList.size(); i++) {
 			if (stepList.get(i) == 0) { // on grass
@@ -182,7 +186,7 @@ public class SurfaceActivity extends SurfaceView implements
 				draw();
 				for (int i = 0; i < yList.size(); i++) {
 					yList.set(i, yList.get(i) - speedUp);
-					if (yList.get(i) < 0) {
+					if (yList.get(i) < 80) {
 						yList.remove(i);
 						xList.remove(i);
 						stepList.remove(i);
