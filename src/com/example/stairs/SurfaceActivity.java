@@ -10,6 +10,7 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -19,12 +20,21 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.DisplayMetrics;
+import android.os.Handler;
+import android.os.Message;
+import android.util.DisplayMetrics;	
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class SurfaceActivity extends SurfaceView implements
 		SurfaceHolder.Callback, SensorEventListener {
@@ -40,6 +50,14 @@ public class SurfaceActivity extends SurfaceView implements
 	private int speedUp = 1, speedDown = 1;
 	private int gap = 300;
 	private int tmp_hit = 0, hit = 0;
+
+	
+	
+	private LayoutInflater inflater;
+	private String[] rank={"1","1","1"};
+	Database db;
+	Cursor mCursor;
+
 	private int point = 0, tmp_point = 0;
 	private boolean direct = true;
 	private boolean start = false;
@@ -56,7 +74,7 @@ public class SurfaceActivity extends SurfaceView implements
 	public SurfaceActivity(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
-
+		inflater = LayoutInflater.from(getContext());
 		surfHold = getHolder();
 		surfHold.addCallback(this);
 
@@ -135,8 +153,7 @@ public class SurfaceActivity extends SurfaceView implements
 		if (ySheep + 70 == deadline || ySheep == 65) {
 			end = true;
 		}
-		// Log.e(String.valueOf(this.getHeight()),
-		// String.valueOf(this.getWidth()));
+
 	}
 
 	public void setStart() {
@@ -153,6 +170,7 @@ public class SurfaceActivity extends SurfaceView implements
 
 	public boolean getEnd() {
 		return end;
+
 	}
 
 	public void draw() {
@@ -244,6 +262,7 @@ public class SurfaceActivity extends SurfaceView implements
 				checkEnd();
 				if (end == true) {
 					stopTimer();
+
 					for(int i = 0; i<yList.size(); i++) {
 						if(onGrass.get(i) == true) {
 							Log.i("point+5", String.valueOf(point));
@@ -255,6 +274,11 @@ public class SurfaceActivity extends SurfaceView implements
 							
 						}
 					}
+
+
+					Message msg = new Message();
+					msg.what = 1;
+					uiHandler.sendMessage(msg);
 
 				}
 			}
@@ -353,5 +377,98 @@ public class SurfaceActivity extends SurfaceView implements
 			// Log.i("123", "UP");
 		}
 	}
+
+	public void showRankDialog() {
+	
+		db = new Database(getContext());
+		db.open();
+		mCursor = db.getAll();
+		String rankNumber = getRank(db.getAll());
+		String[] from_column = new String[] { db.KEY_NAME, db.KEY_POINT };
+		int[] to_layout = new int[] { R.id.rank_tv_name,R.id.rank_tv_point };
+
+		// Now create a simple cursor adapter
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(getContext(),
+				R.layout.rank_row, mCursor, from_column,
+				to_layout);
+
+		
+		View customDialog = inflater.inflate(
+				R.layout.input_rank_dialog, null);
+		final EditText editText = (EditText) customDialog.findViewById(R.id.rank_edit_name);
+		ListView listView = (ListView) customDialog.findViewById(R.id.listview_rank);
+		TextView showRankTv = (TextView) customDialog.findViewById(R.id.rank_tv_currentrank);
+		TextView rankPointTv = (TextView) customDialog.findViewById(R.id.rank_tv_point);
+		showRankTv.setText(rankNumber+"/"+(mCursor.getCount()+1));
+		rankPointTv.setText(String.valueOf(point));
+		listView.setAdapter(adapter);
+		new AlertDialog.Builder(getContext())
+				.setView(customDialog)
+				.setNegativeButton("返回主選單",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// TODO Auto-generated method stub
+							}
+
+						})
+				.setPositiveButton("新增排行",
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// TODO Auto-generated method stub
+								//
+								db.create(editText.getText().toString(),String.valueOf(point));
+								onDetachedFromWindow();
+							}
+
+						}).create().show();
+
+	}
+	public String getRank(Cursor cursor) {
+		int rank = 1;
+		if(cursor.getCount() != 0) {
+			cursor.moveToFirst();	
+			int temp = Integer.parseInt(cursor.getString(2));
+			if(point > temp) {
+				return String.valueOf(rank);
+			}//將指標移至第一筆資料
+			else {
+				rank+=1;
+				while (cursor.moveToNext()) {
+					temp = Integer.parseInt(cursor.getString(2));
+					if(point > temp) {
+						break;
+					}
+					rank+=1;
+				}
+			}
+			
+		}
+
+		return String.valueOf(rank);
+	}
+
+	private Handler uiHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			// 0 => stop,
+			// 1=> game over show rank
+			switch (msg.what) {
+			case 0:
+				// game stop code
+				break;
+			case 1:
+				// 1=> game over show rank
+				showRankDialog();
+				break;
+			default:
+				break;
+			}
+		}
+	};
 
 }
