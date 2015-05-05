@@ -18,6 +18,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_homepage);
+		getActionBar().hide(); 
 		surfaceView = new SurfaceActivity(this);
 		init();
 
@@ -25,10 +26,10 @@ public class MainActivity extends Activity {
 
 	public void init() {
 		ImageButton btn_newgame = (ImageButton) findViewById(R.id.btn_newgame);
-		Button btn_continue = (Button) findViewById(R.id.btn_continue);
-		Button btn_note = (Button) findViewById(R.id.btn_note);
-		Button btn_rank = (Button) findViewById(R.id.btn_rank);
-		Button btn_story = (Button) findViewById(R.id.btn_story);
+		ImageButton btn_continue = (ImageButton) findViewById(R.id.btn_continue);
+		ImageButton btn_note = (ImageButton) findViewById(R.id.btn_note);
+		ImageButton btn_rank = (ImageButton) findViewById(R.id.btn_rank);
+		ImageButton btn_story = (ImageButton) findViewById(R.id.btn_story);
 
 		btn_newgame.setOnClickListener(btnListener);
 		btn_continue.setOnClickListener(btnListener);
