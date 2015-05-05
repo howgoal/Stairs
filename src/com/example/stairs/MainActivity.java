@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class MainActivity extends Activity {
 
@@ -23,7 +24,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void init() {
-		Button btn_newgame = (Button) findViewById(R.id.btn_newgame);
+		ImageButton btn_newgame = (ImageButton) findViewById(R.id.btn_newgame);
 		Button btn_continue = (Button) findViewById(R.id.btn_continue);
 		Button btn_note = (Button) findViewById(R.id.btn_note);
 		Button btn_rank = (Button) findViewById(R.id.btn_rank);

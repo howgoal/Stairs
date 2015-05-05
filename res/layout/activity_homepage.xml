@@ -28,7 +28,7 @@
         android:weightSum="10" >
 
         <ImageButton
-            android:id="@+id/imageButton1"
+            android:id="@+id/btn_newgame"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
