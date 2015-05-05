@@ -2,109 +2,42 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFEE58"
-    android:weightSum="10"
     android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4"
-        android:gravity="center" >
+    <ImageView
+        android:id="@+id/imgView_homepage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_launcher" />
 
-        <ImageView
-            android:id="@+id/imgView_homepage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/img_homepage" />
+    <Button
+        android:id="@+id/btn_newgame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="new game" />
 
-    </LinearLayout>
+    <Button
+        android:id="@+id/btn_continue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="continue" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:gravity="center"
-        android:weightSum="10" >
+    <Button
+        android:id="@+id/btn_story"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="story" />
 
-        <ImageButton
-            android:id="@+id/btn_newgame"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:background="#00000000"
-            android:paddingRight="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/btn_new_game" />
+    <Button
+        android:id="@+id/btn_rank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="rank" />
 
-        <ImageButton
-            android:id="@+id/btn_continue"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:background="#00000000"
-            android:paddingLeft="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/btn_continue" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:gravity="center"
-        android:weightSum="10" >
-
-        <ImageButton
-            android:id="@+id/btn_story"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:background="#00000000"
-            android:paddingRight="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/btn_story" />
-
-        <ImageButton
-            android:id="@+id/btn_rank"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:background="#00000000"
-            android:paddingLeft="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/btn_rank" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:gravity="center"
-        android:weightSum="10" >
-
-        <ImageButton
-            android:id="@+id/btn_note"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:background="#00000000"
-            android:paddingRight="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/btn_note" />
-
-        <ImageButton
-            android:id="@+id/btn_leave"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:background="#00000000"
-            android:paddingLeft="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/btn_leave" />
-
-    </LinearLayout>
+    <Button
+        android:id="@+id/btn_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="圖鑑" />
 
 </LinearLayout>

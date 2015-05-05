@@ -94,26 +94,26 @@ public class SurfaceActivity extends SurfaceView implements
 				if (xSheep - xList.get(i) <= wSteps - 20
 						&& -hSheep + 30 <= xSheep - xList.get(i)) {
 					// Log.i("up", "up");
-					if (stepList.get(i) == 0) {
+					switch (stepList.get(i)) {
+					case 0:
 						onGrass.set(i, true);
-						point++;
-						 Log.d("point+1", String.valueOf(point));
-					} else {
+						break;
+					case 1:
+						onGate.set(i, true);
 						hit++;
 						ySheep -= speedUp;
-					}
-
-					if (stepList.get(i) == 1) {
-						onGate.set(i, true);
-						point--; // point will continually less (haven't solve)
-						 Log.d("point-1", String.valueOf(point));
+						break;
+					default:
+						hit++;
+						ySheep -= speedUp;
+						break;
 					}
 				}
 			}
 		}
 		if (hit == tmp_hit) {
 			ySheep += speedDown;
-		} else {
+		} else {// on
 			tmp_hit = hit;
 		}
 	}
@@ -189,7 +189,7 @@ public class SurfaceActivity extends SurfaceView implements
 				if (onGate.get(i) == true) {
 					canvas.drawBitmap(minus, xList.get(i) + 20,
 							yList.get(i) - 70, paint);
-			
+
 				}
 			} else { // normal
 				canvas.drawBitmap(steps, xList.get(i), yList.get(i), paint);
@@ -217,6 +217,15 @@ public class SurfaceActivity extends SurfaceView implements
 						yList.remove(i);
 						xList.remove(i);
 						stepList.remove(i);
+						if(onGrass.get(i) == true) {
+							Log.i("point+5", String.valueOf(point));
+							point += 5;
+						} else if(onGate.get(i) == true) {
+							point -= 1;
+							Log.i("point-1", String.valueOf(point));
+						} else {
+							
+						}
 						onGrass.remove(i);
 						onGate.remove(i);
 						// Log.i("remove", "ok");
@@ -235,6 +244,17 @@ public class SurfaceActivity extends SurfaceView implements
 				checkEnd();
 				if (end == true) {
 					stopTimer();
+					for(int i = 0; i<yList.size(); i++) {
+						if(onGrass.get(i) == true) {
+							Log.i("point+5", String.valueOf(point));
+							point += 5;
+						} else if(onGate.get(i) == true) {
+							point -= 1;
+							Log.i("point-1", String.valueOf(point));
+						} else {
+							
+						}
+					}
 
 				}
 			}
@@ -265,14 +285,6 @@ public class SurfaceActivity extends SurfaceView implements
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		// while(true){ // check every time
-		// try {
-		// threadSave.join();
-		// Log.d("ZR", "in pause end");
-		// } catch (InterruptedException e) {
-		// e.printStackTrace();
-		// }
-		// }
 	}
 
 	@Override

@@ -1,6 +1,8 @@
 package com.example.stairs;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -8,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageButton;
 
 public class MainActivity extends Activity {
 
@@ -18,24 +19,38 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_homepage);
-		getActionBar().hide(); 
 		surfaceView = new SurfaceActivity(this);
 		init();
 
 	}
 
 	public void init() {
-		ImageButton btn_newgame = (ImageButton) findViewById(R.id.btn_newgame);
-		ImageButton btn_continue = (ImageButton) findViewById(R.id.btn_continue);
-		ImageButton btn_note = (ImageButton) findViewById(R.id.btn_note);
-		ImageButton btn_rank = (ImageButton) findViewById(R.id.btn_rank);
-		ImageButton btn_story = (ImageButton) findViewById(R.id.btn_story);
+		Button btn_newgame = (Button) findViewById(R.id.btn_newgame);
+		Button btn_continue = (Button) findViewById(R.id.btn_continue);
+		Button btn_note = (Button) findViewById(R.id.btn_note);
+		Button btn_rank = (Button) findViewById(R.id.btn_rank);
+		Button btn_story = (Button) findViewById(R.id.btn_story);
 
 		btn_newgame.setOnClickListener(btnListener);
 		btn_continue.setOnClickListener(btnListener);
 		btn_note.setOnClickListener(btnListener);
 		btn_rank.setOnClickListener(btnListener);
 		btn_story.setOnClickListener(btnListener);
+	}
+	
+	private void dialog_story() {
+		AlertDialog.Builder alert_story = new AlertDialog.Builder(MainActivity.this);
+		alert_story.setTitle("規則說明");
+		alert_story.setMessage("");
+		alert_story.setPositiveButton("OK", 
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						dialog.dismiss();
+					}
+				});
+		alert_story.show();
 	}
 
 	private OnClickListener btnListener = new OnClickListener() {
