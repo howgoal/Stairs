@@ -40,14 +40,18 @@ public class SurfaceActivity extends SurfaceView implements
 	private int speedUp = 1, speedDown = 1;
 	private int gap = 300;
 	private int tmp_hit = 0, hit = 0;
-	private int point = 0;
-	private boolean direct = true, end = false;
+	private int point = 0, tmp_point = 0;
+	private boolean direct = true;
+	private boolean start = false;
 
 	ArrayList<Integer> xList;
 	ArrayList<Integer> yList;
 	ArrayList<Integer> stepList;
 	ArrayList<Boolean> onGrass;
 	ArrayList<Boolean> onGate;
+
+	Thread threadSave = null;
+	volatile boolean end = false;
 
 	public SurfaceActivity(Context context) {
 		super(context);
@@ -61,6 +65,7 @@ public class SurfaceActivity extends SurfaceView implements
 		stepList = new ArrayList<Integer>();
 		onGrass = new ArrayList<Boolean>();
 		onGate = new ArrayList<Boolean>();
+		threadSave = new Thread();
 		countX();
 		countY();
 		setStep();
@@ -92,6 +97,7 @@ public class SurfaceActivity extends SurfaceView implements
 					if (stepList.get(i) == 0) {
 						onGrass.set(i, true);
 						point++;
+						 Log.d("point+1", String.valueOf(point));
 					} else {
 						hit++;
 						ySheep -= speedUp;
@@ -99,7 +105,8 @@ public class SurfaceActivity extends SurfaceView implements
 
 					if (stepList.get(i) == 1) {
 						onGate.set(i, true);
-						point--;
+						point--; // point will continually less (haven't solve)
+						 Log.d("point-1", String.valueOf(point));
 					}
 				}
 			}
@@ -113,6 +120,8 @@ public class SurfaceActivity extends SurfaceView implements
 
 	public void setStep() {
 		stepList.add(2);
+		onGrass.add(false);
+		onGate.add(false);
 		for (int i = 1; i < 50; i++) {
 			int tmp = (int) (Math.random() * 5); // random 0~4
 			stepList.add(tmp);
@@ -126,7 +135,24 @@ public class SurfaceActivity extends SurfaceView implements
 		if (ySheep + 70 == deadline || ySheep == 65) {
 			end = true;
 		}
-		//Log.e(String.valueOf(this.getHeight()), String.valueOf(this.getWidth()));
+		// Log.e(String.valueOf(this.getHeight()),
+		// String.valueOf(this.getWidth()));
+	}
+
+	public void setStart() {
+		start = true;
+	}
+
+	public boolean getStart() {
+		return start;
+	}
+
+	public int getPoint() {
+		return point;
+	}
+
+	public boolean getEnd() {
+		return end;
 	}
 
 	public void draw() {
@@ -163,6 +189,7 @@ public class SurfaceActivity extends SurfaceView implements
 				if (onGate.get(i) == true) {
 					canvas.drawBitmap(minus, xList.get(i) + 20,
 							yList.get(i) - 70, paint);
+			
 				}
 			} else { // normal
 				canvas.drawBitmap(steps, xList.get(i), yList.get(i), paint);
@@ -195,20 +222,20 @@ public class SurfaceActivity extends SurfaceView implements
 						// Log.i("remove", "ok");
 					}
 				}
+
+				// try {
+				// Thread.sleep(100);
+				// Log.e("111", "222");
+				// } catch (InterruptedException e) {
+				// // TODO Auto-generated catch block
+				// e.printStackTrace();
+				// }
+
 				checkOn();
 				checkEnd();
 				if (end == true) {
 					stopTimer();
-//					new Thread() {
-//						public void run() {
-//							runOnUiThread(new Runnable() {
-//								public void run() {
-//									// Do your UI operations like dialog opening
-//									// or Toast here
-//								}
-//							});
-//						}
-//					}.start();
+
 				}
 			}
 		};
@@ -217,6 +244,35 @@ public class SurfaceActivity extends SurfaceView implements
 
 	public void stopTimer() {
 		timer.cancel();
+		start = false;
+	}
+
+	public void resume() {
+		Log.d("ZR", "in resume");
+		end = false;
+		point = tmp_point;
+		threadSave.start();
+	}
+
+	public void pause() {
+		end = true; // modify later
+		tmp_point = point;
+		Log.d("pause point", String.valueOf(point));
+		Log.d("ZR", "in pause");
+		try {
+			threadSave.join(); // wait until other thread finish
+			Log.d("ZR", "in pause end");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		// while(true){ // check every time
+		// try {
+		// threadSave.join();
+		// Log.d("ZR", "in pause end");
+		// } catch (InterruptedException e) {
+		// e.printStackTrace();
+		// }
+		// }
 	}
 
 	@Override
@@ -229,18 +285,23 @@ public class SurfaceActivity extends SurfaceView implements
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
+		Log.d("ZR", "surface create");
 		sensorManager = (SensorManager) getContext().getSystemService(
 				Context.SENSOR_SERVICE);
 		sensorManager.registerListener(this,
 				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 				SensorManager.SENSOR_DELAY_NORMAL);
 
-		startTimer();
+		if (start == true) {
+			startTimer();
+		}
+		// startTimer();
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
+		Log.d("ZR", "surface destroy");
 		stopTimer();
 		sensorManager.unregisterListener(this);
 	}

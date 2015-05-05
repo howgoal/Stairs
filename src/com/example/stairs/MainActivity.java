@@ -2,17 +2,85 @@ package com.example.stairs;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 public class MainActivity extends Activity {
+
+	SurfaceActivity surfaceView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.activity_main);
-		 SurfaceActivity shapeSurfView = new SurfaceActivity(this);
-	     setContentView(shapeSurfView);
+		setContentView(R.layout.activity_homepage);
+		surfaceView = new SurfaceActivity(this);
+		init();
+
+	}
+
+	public void init() {
+		Button btn_newgame = (Button) findViewById(R.id.btn_newgame);
+		Button btn_continue = (Button) findViewById(R.id.btn_continue);
+		Button btn_note = (Button) findViewById(R.id.btn_note);
+		Button btn_rank = (Button) findViewById(R.id.btn_rank);
+		Button btn_story = (Button) findViewById(R.id.btn_story);
+
+		btn_newgame.setOnClickListener(btnListener);
+		btn_continue.setOnClickListener(btnListener);
+		btn_note.setOnClickListener(btnListener);
+		btn_rank.setOnClickListener(btnListener);
+		btn_story.setOnClickListener(btnListener);
+	}
+
+	private OnClickListener btnListener = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			switch (v.getId()) {
+			case R.id.btn_newgame:
+				setContentView(surfaceView);
+				break;
+			case R.id.btn_continue:
+
+				break;
+			case R.id.btn_note:
+
+				break;
+			case R.id.btn_rank:
+
+				break;
+			case R.id.btn_story:
+
+				break;
+
+			default:
+				break;
+			}
+
+		}
+	};
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		Log.d("ZR", "main in resume");
+		surfaceView.setStart();
+		surfaceView.resume();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		Log.d("ZR", "main in pause");
+		surfaceView.pause();
+
+		// int point = surfaceView.getPoint();
+		// Log.i("###", String.valueOf(point));
 	}
 
 	@Override
