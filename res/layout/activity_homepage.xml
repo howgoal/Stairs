@@ -32,16 +32,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:scaleType="fitCenter"
             android:background="#00000000"
+            android:paddingRight="10dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/btn_new_game" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_continue"
             android:layout_width="0dp"
-            android:layout_weight="4"
             android:layout_height="wrap_content"
-            android:text="Continue" />
+            android:layout_weight="4"
+            android:background="#00000000"
+            android:paddingLeft="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_continue" />
 
     </LinearLayout>
 
@@ -52,19 +56,25 @@
         android:gravity="center"
         android:weightSum="10" >
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_story"
             android:layout_width="0dp"
-            android:layout_weight="4"
             android:layout_height="wrap_content"
-            android:text="Story" />
+            android:layout_weight="4"
+            android:background="#00000000"
+            android:paddingRight="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_story" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_rank"
             android:layout_width="0dp"
-            android:layout_weight="4"
             android:layout_height="wrap_content"
-            android:text="Rank" />
+            android:layout_weight="4"
+            android:background="#00000000"
+            android:paddingLeft="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_rank" />
 
     </LinearLayout>
 
@@ -75,19 +85,25 @@
         android:gravity="center"
         android:weightSum="10" >
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_note"
             android:layout_width="0dp"
-            android:layout_weight="4"
             android:layout_height="wrap_content"
-            android:text="Note" />
+            android:layout_weight="4"
+            android:background="#00000000"
+            android:paddingRight="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_note" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_leave"
             android:layout_width="0dp"
-            android:layout_weight="4"
             android:layout_height="wrap_content"
-            android:text="Leave" />
+            android:layout_weight="4"
+            android:background="#00000000"
+            android:paddingLeft="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/btn_leave" />
 
     </LinearLayout>
 
