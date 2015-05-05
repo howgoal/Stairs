@@ -2,42 +2,93 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFEE58"
+    android:weightSum="10"
     android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/imgView_homepage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_launcher" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:gravity="center" >
 
-    <Button
-        android:id="@+id/btn_newgame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="new game" />
+        <ImageView
+            android:id="@+id/imgView_homepage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_homepage" />
 
-    <Button
-        android:id="@+id/btn_continue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="continue" />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_story"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="story" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:weightSum="10" >
 
-    <Button
-        android:id="@+id/btn_rank"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="rank" />
+        <ImageButton
+            android:id="@+id/imageButton1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:scaleType="fitCenter"
+            android:background="#00000000"
+            android:src="@drawable/btn_new_game" />
 
-    <Button
-        android:id="@+id/btn_note"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="圖鑑" />
+        <Button
+            android:id="@+id/btn_continue"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content"
+            android:text="Continue" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:weightSum="10" >
+
+        <Button
+            android:id="@+id/btn_story"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content"
+            android:text="Story" />
+
+        <Button
+            android:id="@+id/btn_rank"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content"
+            android:text="Rank" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:weightSum="10" >
+
+        <Button
+            android:id="@+id/btn_note"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content"
+            android:text="Note" />
+
+        <Button
+            android:id="@+id/btn_leave"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content"
+            android:text="Leave" />
+
+    </LinearLayout>
 
 </LinearLayout>
