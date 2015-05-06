@@ -22,7 +22,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.Message;
-import android.util.DisplayMetrics;	
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -51,16 +51,16 @@ public class SurfaceActivity extends SurfaceView implements
 	private int gap = 300;
 	private int tmp_hit = 0, hit = 0;
 
-	
-	
 	private LayoutInflater inflater;
-	private String[] rank={"1","1","1"};
+	private String[] rank = { "1", "1", "1" };
 	Database db;
 	Cursor mCursor;
+	FileIO io;
 
 	private int point = 0, tmp_point = 0;
 	private boolean direct = true;
 	private boolean start = false;
+	private boolean restart = false;
 
 	ArrayList<Integer> xList;
 	ArrayList<Integer> yList;
@@ -84,9 +84,42 @@ public class SurfaceActivity extends SurfaceView implements
 		onGrass = new ArrayList<Boolean>();
 		onGate = new ArrayList<Boolean>();
 		threadSave = new Thread();
+	}
+
+	public void newGame() {
 		countX();
 		countY();
 		setStep();
+	}
+
+	public void reloadGame() {
+		// 讀取資料
+		io = new FileIO();
+		String x = io.readFile("dataX.txt");
+		String y = io.readFile("dataY.txt");
+		String step = io.readFile("dataStep.txt");
+		String loc = io.readFile("dataLocation.txt");
+		x = x.substring(0, x.length() - 1);
+		y = y.substring(0, y.length() - 1);
+		step = step.substring(0, step.length() - 1);
+		String[] xx = x.split(",");
+		String[] yy = y.split(",");
+		String[] steps = step.split(",");
+		String[] location = loc.split(",");
+		Log.i("x", String.valueOf(xx.length));
+		Log.i("y", String.valueOf(yy.length));
+		Log.i("s", String.valueOf(steps.length));
+		for (int i = 0; i < xx.length; i++) {
+			xList.add(Integer.parseInt(xx[i]));
+		}
+		for (int j = 0; j < yy.length; j++) {
+			yList.add(Integer.parseInt(yy[j]));
+		}
+		for (int k = 0; k < steps.length; k++) {
+			stepList.add(Integer.parseInt(steps[k]));
+		}
+		xSheep = Integer.parseInt(location[0]);
+		ySheep = Integer.parseInt(location[1]);
 	}
 
 	private void countX() {
@@ -138,14 +171,23 @@ public class SurfaceActivity extends SurfaceView implements
 
 	public void setStep() {
 		stepList.add(2);
-		onGrass.add(false);
-		onGate.add(false);
 		for (int i = 1; i < 50; i++) {
 			int tmp = (int) (Math.random() * 5); // random 0~4
 			stepList.add(tmp);
+		}
+	}
+
+	public void setGrass() {
+		for (int i = 0; i < 50; i++) {
 			onGrass.add(false);
+		}
+	}
+
+	public void setGate() {
+		for (int i = 0; i < 50; i++) {
 			onGate.add(false);
 		}
+
 	}
 
 	public void checkEnd() {
@@ -158,6 +200,10 @@ public class SurfaceActivity extends SurfaceView implements
 
 	public void setStart() {
 		start = true;
+	}
+
+	public void setRestart() {
+		restart = true;
 	}
 
 	public boolean getStart() {
@@ -224,6 +270,9 @@ public class SurfaceActivity extends SurfaceView implements
 	}
 
 	public void startTimer() {
+		Log.i("size", String.valueOf(xList.size()));
+		Log.i("size", String.valueOf(yList.size()));
+		Log.i("size", String.valueOf(stepList.size()));
 		timer = new Timer();
 		task = new TimerTask() {
 			@Override
@@ -235,14 +284,14 @@ public class SurfaceActivity extends SurfaceView implements
 						yList.remove(i);
 						xList.remove(i);
 						stepList.remove(i);
-						if(onGrass.get(i) == true) {
+						if (onGrass.get(i) == true) {
 							point += 5;
 							Log.i("point+5", String.valueOf(point));
-						} else if(onGate.get(i) == true) {
+						} else if (onGate.get(i) == true) {
 							point -= 1;
 							Log.i("point-1", String.valueOf(point));
 						} else {
-							
+
 						}
 						onGrass.remove(i);
 						onGate.remove(i);
@@ -263,18 +312,17 @@ public class SurfaceActivity extends SurfaceView implements
 				if (end == true) {
 					stopTimer();
 
-					for(int i = 0; i<yList.size(); i++) {
-						if(onGrass.get(i) == true) {	
+					for (int i = 0; i < yList.size(); i++) {
+						if (onGrass.get(i) == true) {
 							point += 5;
 							Log.i("point+5", String.valueOf(point));
-						} else if(onGate.get(i) == true) {
+						} else if (onGate.get(i) == true) {
 							point -= 1;
 							Log.i("point-1", String.valueOf(point));
 						} else {
-							
+
 						}
 					}
-
 
 					Message msg = new Message();
 					msg.what = 1;
@@ -303,12 +351,16 @@ public class SurfaceActivity extends SurfaceView implements
 		tmp_point = point;
 		Log.d("pause point", String.valueOf(point));
 		Log.d("ZR", "in pause");
-		try {
-			threadSave.join(); // wait until other thread finish
-			Log.d("ZR", "in pause end");
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		storeData();
+		timer.cancel();
+	}
+
+	public void storeData() {
+		io = new FileIO();
+		io.writeFile("dataX.txt", xList);
+		io.writeFile("dataY.txt", yList);
+		io.writeFile("dataStep.txt", stepList);
+		io.writeLocation("dataLocation.txt", xSheep, ySheep);
 	}
 
 	@Override
@@ -321,17 +373,21 @@ public class SurfaceActivity extends SurfaceView implements
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
-		Log.d("ZR", "surface create");
+		Log.i("ZR", "surface create");
 		sensorManager = (SensorManager) getContext().getSystemService(
 				Context.SENSOR_SERVICE);
 		sensorManager.registerListener(this,
 				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 				SensorManager.SENSOR_DELAY_NORMAL);
 
-		if (start == true) {
-			startTimer();
+		if (start) {
+			newGame();
+		} else if (restart) {
+			reloadGame();
 		}
-		// startTimer();
+		setGate();
+		setGrass();
+		startTimer();
 	}
 
 	@Override
@@ -379,27 +435,28 @@ public class SurfaceActivity extends SurfaceView implements
 	}
 
 	public void showRankDialog() {
-	
+
 		db = new Database(getContext());
 		db.open();
 		mCursor = db.getAll();
 		String rankNumber = getRank(db.getAll());
 		String[] from_column = new String[] { db.KEY_NAME, db.KEY_POINT };
-		int[] to_layout = new int[] { R.id.rank_tv_name,R.id.rank_tv_point };
+		int[] to_layout = new int[] { R.id.rank_tv_name, R.id.rank_tv_point };
 
 		// Now create a simple cursor adapter
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(getContext(),
-				R.layout.rank_row, mCursor, from_column,
-				to_layout);
+				R.layout.rank_row, mCursor, from_column, to_layout);
 
-		
-		View customDialog = inflater.inflate(
-				R.layout.input_rank_dialog, null);
-		final EditText editText = (EditText) customDialog.findViewById(R.id.rank_edit_name);
-		ListView listView = (ListView) customDialog.findViewById(R.id.listview_rank);
-		TextView showRankTv = (TextView) customDialog.findViewById(R.id.rank_tv_currentrank);
-		TextView rankPointTv = (TextView) customDialog.findViewById(R.id.rank_tv_point);
-		showRankTv.setText(rankNumber+"/"+(mCursor.getCount()+1));
+		View customDialog = inflater.inflate(R.layout.input_rank_dialog, null);
+		final EditText editText = (EditText) customDialog
+				.findViewById(R.id.rank_edit_name);
+		ListView listView = (ListView) customDialog
+				.findViewById(R.id.listview_rank);
+		TextView showRankTv = (TextView) customDialog
+				.findViewById(R.id.rank_tv_currentrank);
+		TextView rankPointTv = (TextView) customDialog
+				.findViewById(R.id.rank_tv_point);
+		showRankTv.setText(rankNumber + "/" + (mCursor.getCount() + 1));
 		rankPointTv.setText(String.valueOf(point));
 		listView.setAdapter(adapter);
 		new AlertDialog.Builder(getContext())
@@ -421,32 +478,34 @@ public class SurfaceActivity extends SurfaceView implements
 									int which) {
 								// TODO Auto-generated method stub
 								//
-								db.create(editText.getText().toString(),String.valueOf(point));
+								db.create(editText.getText().toString(),
+										String.valueOf(point));
 								onDetachedFromWindow();
 							}
 
 						}).create().show();
 
 	}
+
 	public String getRank(Cursor cursor) {
 		int rank = 1;
-		if(cursor.getCount() != 0) {
-			cursor.moveToFirst();	
+		if (cursor.getCount() != 0) {
+			cursor.moveToFirst();
 			int temp = Integer.parseInt(cursor.getString(2));
-			if(point > temp) {
+			if (point > temp) {
 				return String.valueOf(rank);
-			}//將指標移至第一筆資料
+			}// 將指標移至第一筆資料
 			else {
-				rank+=1;
+				rank += 1;
 				while (cursor.moveToNext()) {
 					temp = Integer.parseInt(cursor.getString(2));
-					if(point > temp) {
+					if (point > temp) {
 						break;
 					}
-					rank+=1;
+					rank += 1;
 				}
 			}
-			
+
 		}
 
 		return String.valueOf(rank);
