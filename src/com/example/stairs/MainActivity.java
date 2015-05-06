@@ -13,6 +13,9 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
 public class MainActivity extends Activity {
+	boolean angel = false;
+	boolean devil = false;
+	boolean meat = false;
 
 	SurfaceActivity surfaceView;
 	Bundle bundle;
@@ -22,7 +25,8 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_homepage);
 		getActionBar().hide();
-		// surfaceView = new SurfaceActivity(this);
+		surfaceView = new SurfaceActivity(this);
+
 		init();
 		
 		Intent intentback = new Intent(MainActivity.this,Backmusic.class);
@@ -36,13 +40,17 @@ public class MainActivity extends Activity {
 		ImageButton btn_note = (ImageButton) findViewById(R.id.btn_note);
 		ImageButton btn_rank = (ImageButton) findViewById(R.id.btn_rank);
 		ImageButton btn_story = (ImageButton) findViewById(R.id.btn_story);
+
 		bundle = new Bundle();
+
+		ImageButton btn_leave = (ImageButton) findViewById(R.id.btn_leave);
 
 		btn_newgame.setOnClickListener(btnListener);
 		btn_continue.setOnClickListener(btnListener);
 		btn_note.setOnClickListener(btnListener);
 		btn_rank.setOnClickListener(btnListener);
 		btn_story.setOnClickListener(btnListener);
+		btn_leave.setOnClickListener(btnListener);
 	}
 
 	private OnClickListener btnListener = new OnClickListener() {
@@ -67,7 +75,17 @@ public class MainActivity extends Activity {
 				startActivity(intent2);
 				break;
 			case R.id.btn_note:
-
+				checkNote();
+				Intent intent_note = new Intent();
+				intent_note.setClass(MainActivity.this, NoteActivity.class);
+				
+				Bundle bundle_note = new Bundle();
+				bundle_note.putBoolean("angel", angel);
+				bundle_note.putBoolean("devil", devil);
+				bundle_note.putBoolean("meat", meat);
+				
+				intent_note.putExtras(bundle_note);
+				startActivity(intent_note);
 				break;
 			case R.id.btn_rank:
 				Intent intent3 = new Intent();
@@ -78,6 +96,9 @@ public class MainActivity extends Activity {
 			case R.id.btn_story:
 
 				break;
+			case R.id.btn_leave:
+
+				break;
 
 			default:
 				break;
@@ -85,6 +106,19 @@ public class MainActivity extends Activity {
 
 		}
 	};
+
+	private void checkNote() {
+		int points = surfaceView.getPoint();
+		if (points < 0) {
+			devil = true;
+		} else if (points > 50) {
+			angel = true;
+		} else if (surfaceView.checkMeat() == true) {
+			meat = true;
+		} else {
+
+		}
+	}
 
 	@Override
 	protected void onResume() {
