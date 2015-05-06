@@ -38,5 +38,6 @@ public class RankActivity extends Activity {
 		ListView listView = (ListView) findViewById(R.id.listview_rank);
 
 		listView.setAdapter(adapter);
+		db.close();
 	}
 }
