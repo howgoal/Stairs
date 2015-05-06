@@ -61,12 +61,14 @@ public class SurfaceActivity extends SurfaceView implements
 	private boolean direct = true;
 	private boolean start = false;
 	private boolean restart = false;
+	private boolean meatSheep = false;
 
 	ArrayList<Integer> xList;
 	ArrayList<Integer> yList;
 	ArrayList<Integer> stepList;
 	ArrayList<Boolean> onGrass;
 	ArrayList<Boolean> onGate;
+	ArrayList<Boolean> onMeat;
 
 	Thread threadSave = null;
 	volatile boolean end = false;
@@ -83,6 +85,7 @@ public class SurfaceActivity extends SurfaceView implements
 		stepList = new ArrayList<Integer>();
 		onGrass = new ArrayList<Boolean>();
 		onGate = new ArrayList<Boolean>();
+		onMeat = new ArrayList<Boolean>();
 		threadSave = new Thread();
 	}
 
@@ -124,7 +127,7 @@ public class SurfaceActivity extends SurfaceView implements
 
 	private void countX() {
 		xList.add(130);
-		for (int i = 1; i < 50; i++) {
+		for (int i = 1; i < 500; i++) {
 			xPosition = (int) (Math.random() * 300 + 10);
 			xList.add(xPosition);
 		}
@@ -132,7 +135,7 @@ public class SurfaceActivity extends SurfaceView implements
 
 	private void countY() {
 		yList.add(gap);
-		for (int i = 1; i < 50; i++) {
+		for (int i = 1; i < 500; i++) {
 			gap = gap + 100;
 			yPosition = (int) (Math.random() * 30 + gap);
 			yList.add(yPosition);
@@ -154,6 +157,9 @@ public class SurfaceActivity extends SurfaceView implements
 						hit++;
 						ySheep -= speedUp;
 						break;
+					case 5:
+						onMeat.set(i, true);
+						break;
 					default:
 						hit++;
 						ySheep -= speedUp;
@@ -171,21 +177,32 @@ public class SurfaceActivity extends SurfaceView implements
 
 	public void setStep() {
 		stepList.add(2);
-		for (int i = 1; i < 50; i++) {
+		for (int i = 1; i < 500; i++) {
 			int tmp = (int) (Math.random() * 5); // random 0~4
-			stepList.add(tmp);
+			if (i == 2 || i == 50 || i == 100) { // set as meat
+				stepList.add(5);
+			} else {
+				stepList.add(tmp);
+			}
 		}
 	}
 
 	public void setGrass() {
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 500; i++) {
 			onGrass.add(false);
 		}
 	}
 
 	public void setGate() {
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 500; i++) {
 			onGate.add(false);
+		}
+
+	}
+	
+	public void setMeat() {
+		for (int i = 0; i < 500; i++) {
+			onMeat.add(false);
 		}
 
 	}
@@ -216,7 +233,10 @@ public class SurfaceActivity extends SurfaceView implements
 
 	public boolean getEnd() {
 		return end;
+	}
 
+	public boolean checkMeat() {
+		return meatSheep;
 	}
 
 	public void draw() {
@@ -226,6 +246,7 @@ public class SurfaceActivity extends SurfaceView implements
 		Bitmap line = BitmapFactory.decodeResource(res, R.drawable.deadline);
 		Bitmap grass = BitmapFactory.decodeResource(res, R.drawable.grass);
 		Bitmap gate = BitmapFactory.decodeResource(res, R.drawable.gate);
+		Bitmap meat = BitmapFactory.decodeResource(res, R.drawable.meat);
 		Bitmap back = BitmapFactory.decodeResource(res, R.drawable.back);
 		Bitmap plus = BitmapFactory.decodeResource(res, R.drawable.plus);
 		Bitmap minus = BitmapFactory.decodeResource(res, R.drawable.minus);
@@ -233,6 +254,8 @@ public class SurfaceActivity extends SurfaceView implements
 				R.drawable.left_sheep);
 		Bitmap right_sheep = BitmapFactory.decodeResource(res,
 				R.drawable.right_sheep);
+		Bitmap test_sheep = BitmapFactory.decodeResource(res,
+				R.drawable.test_sheep);
 		Paint paint = new Paint();
 		paint.setAntiAlias(true); // remove edge effect
 		canvas.drawColor(Color.WHITE);
@@ -253,7 +276,15 @@ public class SurfaceActivity extends SurfaceView implements
 				if (onGate.get(i) == true) {
 					canvas.drawBitmap(minus, xList.get(i) + 20,
 							yList.get(i) - 70, paint);
-
+				}
+			} else if (stepList.get(i) == 5) { // on meat
+				if (onMeat.get(i) == false) {
+					canvas.drawBitmap(meat, xList.get(i), yList.get(i), paint);
+				} else {
+					meatSheep = true;
+					canvas.drawBitmap(back, xList.get(i), yList.get(i), paint);
+					canvas.drawBitmap(plus, xList.get(i) + 60, yList.get(i),
+							paint);
 				}
 			} else { // normal
 				canvas.drawBitmap(steps, xList.get(i), yList.get(i), paint);
@@ -261,9 +292,26 @@ public class SurfaceActivity extends SurfaceView implements
 		}
 
 		if (direct == true) {
-			canvas.drawBitmap(right_sheep, xSheep, ySheep, paint);
+			if (point > 50) {
+				canvas.drawBitmap(right_sheep, xSheep, ySheep, paint);
+			} else if (point < 0) {
+				canvas.drawBitmap(right_sheep, xSheep, ySheep, paint);
+			} else if (meatSheep == true) {
+				canvas.drawBitmap(test_sheep, xSheep, ySheep, paint);
+			} else {
+				canvas.drawBitmap(right_sheep, xSheep, ySheep, paint);
+			}
+
 		} else {
-			canvas.drawBitmap(left_sheep, xSheep, ySheep, paint);
+			if (point > 50) {
+				canvas.drawBitmap(left_sheep, xSheep, ySheep, paint);
+			} else if (point < 0) {
+				canvas.drawBitmap(left_sheep, xSheep, ySheep, paint);
+			} else if (meatSheep == true) {
+				canvas.drawBitmap(test_sheep, xSheep, ySheep, paint);
+			} else {
+				canvas.drawBitmap(left_sheep, xSheep, ySheep, paint);
+			}
 		}
 
 		getHolder().unlockCanvasAndPost(canvas);
@@ -290,22 +338,18 @@ public class SurfaceActivity extends SurfaceView implements
 						} else if (onGate.get(i) == true) {
 							point -= 1;
 							Log.i("point-1", String.valueOf(point));
+						} else if (onMeat.get(i) == true) {
+							point += 10;
+							Log.i("point+10", String.valueOf(point));
 						} else {
 
 						}
 						onGrass.remove(i);
 						onGate.remove(i);
+						onMeat.remove(i);
 						// Log.i("remove", "ok");
 					}
 				}
-
-				// try {
-				// Thread.sleep(100);
-				// Log.e("111", "222");
-				// } catch (InterruptedException e) {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// }
 
 				checkOn();
 				checkEnd();
@@ -319,6 +363,10 @@ public class SurfaceActivity extends SurfaceView implements
 						} else if (onGate.get(i) == true) {
 							point -= 1;
 							Log.i("point-1", String.valueOf(point));
+						} else if (onMeat.get(i) == true) {
+							point += 10;
+							Log.i("point+10", String.valueOf(point));
+							meatSheep = true;
 						} else {
 
 						}
@@ -327,7 +375,6 @@ public class SurfaceActivity extends SurfaceView implements
 					Message msg = new Message();
 					msg.what = 1;
 					uiHandler.sendMessage(msg);
-
 				}
 			}
 		};
@@ -387,6 +434,7 @@ public class SurfaceActivity extends SurfaceView implements
 		}
 		setGate();
 		setGrass();
+		setMeat();
 		startTimer();
 	}
 
@@ -481,7 +529,7 @@ public class SurfaceActivity extends SurfaceView implements
 								db.create(editText.getText().toString(),
 										String.valueOf(point));
 								onDetachedFromWindow();
-							}
+								}
 
 						}).create().show();
 
