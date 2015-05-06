@@ -30,6 +30,11 @@
             android:label="@string/title_activity_game" >
         </activity>
         <activity android:name="com.example.stairs.RankActivity"></activity>
+        <service 
+			android:name=".Backmusic" 
+			android:exported="true" 
+			android:process=":remote"> 
+		</service> 
     </application>
 
 </manifest>
