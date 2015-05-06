@@ -66,7 +66,10 @@ public class MainActivity extends Activity {
 
 				break;
 			case R.id.btn_rank:
-
+				Intent intent3 = new Intent();
+				intent3.setClass(MainActivity.this,RankActivity.class);
+				startActivity(intent3);
+				MainActivity.this.finish();
 				break;
 			case R.id.btn_story:
 

@@ -29,6 +29,7 @@
             android:name="com.example.stairs.GameActivity"
             android:label="@string/title_activity_game" >
         </activity>
+        <activity android:name="com.example.stairs.RankActivity"></activity>
     </application>
 
 </manifest>
