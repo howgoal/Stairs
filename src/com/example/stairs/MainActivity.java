@@ -1,5 +1,6 @@
 package com.example.stairs;
 
+
 import android.R.bool;
 import android.app.Activity;
 import android.content.Intent;
@@ -23,6 +24,9 @@ public class MainActivity extends Activity {
 		getActionBar().hide();
 		// surfaceView = new SurfaceActivity(this);
 		init();
+		
+		Intent intentback = new Intent(MainActivity.this,Backmusic.class);
+        startService(intentback); 
 
 	}
 
@@ -88,6 +92,10 @@ public class MainActivity extends Activity {
 		Log.d("ZR", "main in resume");
 		// surfaceView.setStart();
 		// surfaceView.resume();
+		
+		Intent intentback = new Intent(MainActivity.this,Backmusic.class);
+        startService(intentback); 
+		
 	}
 
 	@Override
