@@ -1,6 +1,7 @@
 package com.example.stairs;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -54,7 +55,10 @@ public class MainActivity extends Activity {
 
 				break;
 			case R.id.btn_rank:
-
+				Intent intent = new Intent();
+				intent.setClass(MainActivity.this,RankActivity.class);
+				startActivity(intent);
+				MainActivity.this.finish();
 				break;
 			case R.id.btn_story:
 
