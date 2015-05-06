@@ -1,5 +1,6 @@
 package com.example.stairs;
 
+import android.R.bool;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,19 +9,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 public class MainActivity extends Activity {
 
 	SurfaceActivity surfaceView;
+	Bundle bundle;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_homepage);
-		getActionBar().hide(); 
-		surfaceView = new SurfaceActivity(this);
+		getActionBar().hide();
+		// surfaceView = new SurfaceActivity(this);
 		init();
 
 	}
@@ -31,6 +32,7 @@ public class MainActivity extends Activity {
 		ImageButton btn_note = (ImageButton) findViewById(R.id.btn_note);
 		ImageButton btn_rank = (ImageButton) findViewById(R.id.btn_rank);
 		ImageButton btn_story = (ImageButton) findViewById(R.id.btn_story);
+		bundle = new Bundle();
 
 		btn_newgame.setOnClickListener(btnListener);
 		btn_continue.setOnClickListener(btnListener);
@@ -46,18 +48,27 @@ public class MainActivity extends Activity {
 			// TODO Auto-generated method stub
 			switch (v.getId()) {
 			case R.id.btn_newgame:
-				setContentView(surfaceView);
+				// setContentView(surfaceView);
+				Intent intent = new Intent();
+				intent.setClass(MainActivity.this, GameActivity.class);
+				bundle.putBoolean("CONTINUE", false);
+				intent.putExtras(bundle);
+				startActivity(intent);
 				break;
 			case R.id.btn_continue:
-
+				Intent intent2 = new Intent();
+				intent2.setClass(MainActivity.this, GameActivity.class);
+				bundle.putBoolean("CONTINUE", true);
+				intent2.putExtras(bundle);
+				startActivity(intent2);
 				break;
 			case R.id.btn_note:
 
 				break;
 			case R.id.btn_rank:
-				Intent intent = new Intent();
-				intent.setClass(MainActivity.this,RankActivity.class);
-				startActivity(intent);
+				Intent intent3 = new Intent();
+				intent3.setClass(MainActivity.this,RankActivity.class);
+				startActivity(intent3);
 				MainActivity.this.finish();
 				break;
 			case R.id.btn_story:
@@ -75,15 +86,25 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		Log.d("ZR", "main in resume");
-		surfaceView.setStart();
-		surfaceView.resume();
+		// surfaceView.setStart();
+		// surfaceView.resume();
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		Log.d("ZR", "main in pause");
-		surfaceView.pause();
+		// surfaceView.pause();
+
+		// int point = surfaceView.getPoint();
+		// Log.i("###", String.valueOf(point));
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		Log.i("ZR", "main in stop");
+		// surfaceView.pause();
 
 		// int point = surfaceView.getPoint();
 		// Log.i("###", String.valueOf(point));
