@@ -64,6 +64,7 @@ public class MainActivity extends Activity {
 				// setContentView(surfaceView);
 				Intent intent = new Intent();
 				intent.setClass(MainActivity.this, GameActivity.class);
+				CONTINUE = false;
 				bundle.putBoolean("CONTINUE", CONTINUE);
 				intent.putExtras(bundle);
 				startActivity(intent);
