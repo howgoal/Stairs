@@ -45,15 +45,15 @@ public class NoteActivity extends Activity {
 
 		if (angel == true) {
 			img_angel.setImageDrawable(getResources().getDrawable(
-					R.drawable.right_sheep));
+					R.drawable.sheep_angel));
 		}
 		if (devil == true) {
 			img_devil.setImageDrawable(getResources().getDrawable(
-					R.drawable.right_sheep));
+					R.drawable.sheep_devil));
 		}
 		if (meat == true) {
 			img_meat.setImageDrawable(getResources().getDrawable(
-					R.drawable.right_sheep));
+					R.drawable.sheep_meat));
 		}
 	}
 

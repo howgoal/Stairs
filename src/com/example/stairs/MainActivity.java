@@ -1,11 +1,12 @@
 package com.example.stairs;
 
-
 import android.R.bool;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,9 +29,9 @@ public class MainActivity extends Activity {
 		surfaceView = new SurfaceActivity(this);
 
 		init();
-		
-		Intent intentback = new Intent(MainActivity.this,Backmusic.class);
-        startService(intentback); 
+
+		Intent intentback = new Intent(MainActivity.this, Backmusic.class);
+		startService(intentback);
 
 	}
 
@@ -78,22 +79,28 @@ public class MainActivity extends Activity {
 				checkNote();
 				Intent intent_note = new Intent();
 				intent_note.setClass(MainActivity.this, NoteActivity.class);
-				
+
 				Bundle bundle_note = new Bundle();
 				bundle_note.putBoolean("angel", angel);
 				bundle_note.putBoolean("devil", devil);
 				bundle_note.putBoolean("meat", meat);
-				
+
 				intent_note.putExtras(bundle_note);
 				startActivity(intent_note);
 				break;
 			case R.id.btn_rank:
 				Intent intent3 = new Intent();
-				intent3.setClass(MainActivity.this,RankActivity.class);
+				intent3.setClass(MainActivity.this, RankActivity.class);
 				startActivity(intent3);
 				break;
 			case R.id.btn_story:
-
+				AlertDialog.Builder dialog_story = new AlertDialog.Builder(
+						MainActivity.this, R.style.dialog);
+				LayoutInflater inflater = getLayoutInflater();
+//				View convertView = (View) inflater.inflate(
+//						R.layout.story_layout, null);
+//				dialog_story.setView(convertView);
+				dialog_story.show();
 				break;
 			case R.id.btn_leave:
 				MainActivity.this.finish();
@@ -108,7 +115,7 @@ public class MainActivity extends Activity {
 
 	private void checkNote() {
 		int points = surfaceView.getPoint();
-		//Log.i("~~~", String.valueOf(surfaceView.getPoint()));
+		// Log.i("~~~", String.valueOf(surfaceView.getPoint()));
 		if (points < 0) {
 			devil = true;
 		} else if (points > 50) {
@@ -126,10 +133,10 @@ public class MainActivity extends Activity {
 		Log.d("ZR", "main in resume");
 		// surfaceView.setStart();
 		// surfaceView.resume();
-		
-		Intent intentback = new Intent(MainActivity.this,Backmusic.class);
-        startService(intentback); 
-		
+
+		Intent intentback = new Intent(MainActivity.this, Backmusic.class);
+		startService(intentback);
+
 	}
 
 	@Override
