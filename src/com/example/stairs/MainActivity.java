@@ -1,10 +1,11 @@
 package com.example.stairs;
 
-import android.R.bool;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +13,9 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
 public class MainActivity extends Activity {
+	boolean angel = false;
+	boolean devil = false;
+	boolean meat = false;
 
 	SurfaceActivity surfaceView;
 	Bundle bundle;
@@ -21,7 +25,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_homepage);
 		getActionBar().hide();
-		// surfaceView = new SurfaceActivity(this);
+		surfaceView = new SurfaceActivity(this);
 		init();
 
 	}
@@ -32,13 +36,17 @@ public class MainActivity extends Activity {
 		ImageButton btn_note = (ImageButton) findViewById(R.id.btn_note);
 		ImageButton btn_rank = (ImageButton) findViewById(R.id.btn_rank);
 		ImageButton btn_story = (ImageButton) findViewById(R.id.btn_story);
+
 		bundle = new Bundle();
+
+		ImageButton btn_leave = (ImageButton) findViewById(R.id.btn_leave);
 
 		btn_newgame.setOnClickListener(btnListener);
 		btn_continue.setOnClickListener(btnListener);
 		btn_note.setOnClickListener(btnListener);
 		btn_rank.setOnClickListener(btnListener);
 		btn_story.setOnClickListener(btnListener);
+		btn_leave.setOnClickListener(btnListener);
 	}
 
 	private OnClickListener btnListener = new OnClickListener() {
@@ -63,16 +71,31 @@ public class MainActivity extends Activity {
 				startActivity(intent2);
 				break;
 			case R.id.btn_note:
+				checkNote();
+				Intent intent_note = new Intent();
+				intent_note.setClass(MainActivity.this, NoteActivity.class);
 
+				Bundle bundle_note = new Bundle();
+				bundle_note.putBoolean("angel", angel);
+				bundle_note.putBoolean("devil", devil);
+				bundle_note.putBoolean("meat", meat);
+
+				intent_note.putExtras(bundle_note);
+				startActivity(intent_note);
 				break;
 			case R.id.btn_rank:
 				Intent intent3 = new Intent();
-				intent3.setClass(MainActivity.this,RankActivity.class);
+				intent3.setClass(MainActivity.this, RankActivity.class);
 				startActivity(intent3);
-				MainActivity.this.finish();
 				break;
 			case R.id.btn_story:
-
+				AlertDialog.Builder dialog_story = new AlertDialog.Builder(
+						MainActivity.this, R.style.dialog);
+				LayoutInflater inflater = getLayoutInflater();
+				dialog_story.show();
+				break;
+			case R.id.btn_leave:
+				MainActivity.this.finish();
 				break;
 
 			default:
@@ -82,32 +105,34 @@ public class MainActivity extends Activity {
 		}
 	};
 
+	private void checkNote() {
+		int points = surfaceView.getPoint();
+		if (points < 0) {
+			devil = true;
+		} else if (points > 50) {
+			angel = true;
+		} else if (surfaceView.checkMeat() == true) {
+			meat = true;
+		} else {
+
+		}
+	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		Log.d("ZR", "main in resume");
-		// surfaceView.setStart();
-		// surfaceView.resume();
+
+		Intent intentback = new Intent(MainActivity.this, Backmusic.class);
+		startService(intentback);
+
 	}
 
 	@Override
-	protected void onPause() {
-		super.onPause();
-		Log.d("ZR", "main in pause");
-		// surfaceView.pause();
-
-		// int point = surfaceView.getPoint();
-		// Log.i("###", String.valueOf(point));
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
-		Log.i("ZR", "main in stop");
-		// surfaceView.pause();
-
-		// int point = surfaceView.getPoint();
-		// Log.i("###", String.valueOf(point));
+	protected void onDestroy() {
+		super.onDestroy();
+		Intent intent = new Intent(MainActivity.this, Backmusic.class);
+		stopService(intent);
 	}
 
 	@Override
