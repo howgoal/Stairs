@@ -245,6 +245,7 @@ public class SurfaceActivity extends SurfaceView implements
 		Bitmap meat = BitmapFactory.decodeResource(res, R.drawable.meat);
 		Bitmap back = BitmapFactory.decodeResource(res, R.drawable.back);
 		Bitmap plus = BitmapFactory.decodeResource(res, R.drawable.plus);
+		
 		Bitmap plus_ten = BitmapFactory
 				.decodeResource(res, R.drawable.plus_ten);
 		Bitmap minus = BitmapFactory.decodeResource(res, R.drawable.minus);
@@ -268,7 +269,8 @@ public class SurfaceActivity extends SurfaceView implements
 		// R.drawable.test_sheep);
 		Paint paint = new Paint();
 		paint.setAntiAlias(true); // remove edge effect
-		canvas.drawColor(Color.WHITE);
+		//canvas.drawColor(Color.WHITE);
+		canvas.drawBitmap(back, 0,0, paint);
 		canvas.drawBitmap(line, 0, 0, paint);
 
 		for (int i = 0; i < yList.size(); i++) {
