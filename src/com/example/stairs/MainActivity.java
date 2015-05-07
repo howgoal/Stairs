@@ -1,9 +1,7 @@
 package com.example.stairs;
 
-import android.R.bool;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -94,9 +92,6 @@ public class MainActivity extends Activity {
 				AlertDialog.Builder dialog_story = new AlertDialog.Builder(
 						MainActivity.this, R.style.dialog);
 				LayoutInflater inflater = getLayoutInflater();
-//				View convertView = (View) inflater.inflate(
-//						R.layout.story_layout, null);
-//				dialog_story.setView(convertView);
 				dialog_story.show();
 				break;
 			case R.id.btn_leave:
@@ -112,7 +107,6 @@ public class MainActivity extends Activity {
 
 	private void checkNote() {
 		int points = surfaceView.getPoint();
-		// Log.i("~~~", String.valueOf(surfaceView.getPoint()));
 		if (points < 0) {
 			devil = true;
 		} else if (points > 50) {
@@ -128,14 +122,11 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		Log.d("ZR", "main in resume");
-		// surfaceView.setStart();
-		// surfaceView.resume();
 
 		Intent intentback = new Intent(MainActivity.this, Backmusic.class);
 		startService(intentback);
 
 	}
-
 
 	@Override
 	protected void onDestroy() {
@@ -143,7 +134,7 @@ public class MainActivity extends Activity {
 		Intent intent = new Intent(MainActivity.this, Backmusic.class);
 		stopService(intent);
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

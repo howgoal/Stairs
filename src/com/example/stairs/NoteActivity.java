@@ -3,9 +3,7 @@ package com.example.stairs;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
@@ -89,7 +87,7 @@ public class NoteActivity extends Activity {
 
 							}
 						});
-				builder_angel.show();				
+				builder_angel.show();
 				break;
 			case R.id.sheep_devil:
 				AlertDialog.Builder builder_devil = new AlertDialog.Builder(
@@ -103,7 +101,7 @@ public class NoteActivity extends Activity {
 
 							}
 						});
-				builder_devil.show();	
+				builder_devil.show();
 				break;
 			case R.id.sheep_meat:
 				AlertDialog.Builder builder_meat = new AlertDialog.Builder(
@@ -117,7 +115,7 @@ public class NoteActivity extends Activity {
 
 							}
 						});
-				builder_meat.show();	
+				builder_meat.show();
 				break;
 
 			default:
