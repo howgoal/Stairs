@@ -249,6 +249,7 @@ public class SurfaceActivity extends SurfaceView implements
 		Bitmap meat = BitmapFactory.decodeResource(res, R.drawable.meat);
 		Bitmap back = BitmapFactory.decodeResource(res, R.drawable.back);
 		Bitmap plus = BitmapFactory.decodeResource(res, R.drawable.plus);
+		Bitmap plus_ten = BitmapFactory.decodeResource(res, R.drawable.plus_ten);
 		Bitmap minus = BitmapFactory.decodeResource(res, R.drawable.minus);
 		Bitmap left_sheep = BitmapFactory.decodeResource(res,
 				R.drawable.left_sheep);
@@ -295,7 +296,7 @@ public class SurfaceActivity extends SurfaceView implements
 				} else {
 					meatSheep = true;
 					canvas.drawBitmap(back, xList.get(i), yList.get(i), paint);
-					canvas.drawBitmap(plus, xList.get(i) + 60, yList.get(i),
+					canvas.drawBitmap(plus_ten, xList.get(i) + 60, yList.get(i),
 							paint);
 				}
 			} else { // normal
@@ -390,7 +391,7 @@ public class SurfaceActivity extends SurfaceView implements
 				}
 			}
 		};
-		timer.schedule(task, 1, 1); // do task per 0.001 second
+		timer.schedule(task, 10, 10); // do task per 0.01 second
 	}
 
 	public void stopTimer() {

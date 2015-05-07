@@ -3,6 +3,8 @@ package com.example.stairs;
 
 import android.R.bool;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -93,7 +95,18 @@ public class MainActivity extends Activity {
 				startActivity(intent3);
 				break;
 			case R.id.btn_story:
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						MainActivity.this);
+				builder.setTitle("");
+				builder.setMessage("");
+				builder.setPositiveButton(R.string.note_ok,
+						new DialogInterface.OnClickListener() {
+							public void onClick(
+									DialogInterface dialoginterface, int i) {
 
+							}
+						});
+				builder.show();
 				break;
 			case R.id.btn_leave:
 				MainActivity.this.finish();
