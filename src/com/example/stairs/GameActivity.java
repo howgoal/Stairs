@@ -26,7 +26,7 @@ public class GameActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 		Log.i("ZR", "game in start");
-		if (CONTINUE) {
+		if (surfaceView.end) {
 			surfaceView.setRestart();
 		} else {
 			surfaceView.setStart();
