@@ -119,6 +119,7 @@ public class SurfaceActivity extends SurfaceView implements
 		}
 		xSheep = Integer.parseInt(location[0]);
 		ySheep = Integer.parseInt(location[1]);
+		timeGame = Integer.parseInt(location[2]);
 	}
 
 	private void countX() {
@@ -423,7 +424,7 @@ public class SurfaceActivity extends SurfaceView implements
 		io.writeFile("dataX.txt", xList);
 		io.writeFile("dataY.txt", yList);
 		io.writeFile("dataStep.txt", stepList);
-		io.writeLocation("dataLocation.txt", xSheep, ySheep);
+		io.writeLocation("dataLocation.txt", xSheep, ySheep, timeGame);
 	}
 
 	public void delData() {

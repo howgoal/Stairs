@@ -25,11 +25,12 @@ public class FileIO {
 		}
 	}
 
-	public void writeLocation(String fileName, int x, int y) {
+	public void writeLocation(String fileName, int x, int y, int time) {
 		try {
 			FileWriter fw = new FileWriter("/sdcard/" + fileName, false);
 			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write(String.valueOf(x)+","+String.valueOf(y));
+			bw.write(String.valueOf(x) + "," + String.valueOf(y) + ","
+					+ String.valueOf(time));
 			bw.newLine();
 			bw.close();
 		} catch (IOException e) {
