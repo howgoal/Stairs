@@ -27,11 +27,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_homepage);
 		getActionBar().hide();
 		surfaceView = new SurfaceActivity(this);
-
 		init();
-
-		Intent intentback = new Intent(MainActivity.this, Backmusic.class);
-		startService(intentback);
 
 	}
 
@@ -139,26 +135,14 @@ public class MainActivity extends Activity {
 
 	}
 
-	@Override
-	protected void onPause() {
-		super.onPause();
-		Log.d("ZR", "main in pause");
-		// surfaceView.pause();
-
-		// int point = surfaceView.getPoint();
-		// Log.i("###", String.valueOf(point));
-	}
 
 	@Override
-	protected void onStop() {
-		super.onStop();
-		Log.i("ZR", "main in stop");
-		// surfaceView.pause();
-
-		// int point = surfaceView.getPoint();
-		// Log.i("###", String.valueOf(point));
+	protected void onDestroy() {
+		super.onDestroy();
+		Intent intent = new Intent(MainActivity.this, Backmusic.class);
+		stopService(intent);
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
