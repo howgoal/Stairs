@@ -25,6 +25,7 @@ public class Database {
 	public static final String KEY_ROWID = "_id";
 	public static final String KEY_POINT = "point";
 	public static final String KEY_NAME = "name";
+	public static final String KEY_TIME = "time";
 	public static final String KEY_CREATED = "created";
 
 	/** Constructor */
@@ -46,7 +47,7 @@ public class Database {
 
 		private static final String DATABASE_CREATE = "CREATE TABLE "
 				+ DATABASE_TABLE + "(" + KEY_ROWID + " INTEGER PRIMARY KEY,"
-				+ KEY_NAME + " TEXT NOT NULL," + KEY_POINT + " TEXT NOT NULL,"+ KEY_CREATED + " TIMESTAMP"
+				+ KEY_NAME + " TEXT NOT NULL," + KEY_TIME + " TEXT NOT NULL,"+ KEY_POINT + " TEXT NOT NULL,"+ KEY_CREATED + " TIMESTAMP"
 				+ ");";
 
 		// public DatabaseHelper(Context context, String name,
@@ -88,7 +89,7 @@ public class Database {
 	public Cursor getAll() {
 		return db.query(DATABASE_TABLE, // Which table to Select
 				// strCols,// Which columns to return
-				new String[] { KEY_ROWID, KEY_NAME,KEY_POINT, KEY_CREATED }, null, // WHERE
+				new String[] { KEY_ROWID, KEY_NAME,KEY_TIME,KEY_POINT, KEY_CREATED }, null, // WHERE
 																			// clause
 				null, // WHERE arguments
 				null, // GROUP BY clause
@@ -98,14 +99,14 @@ public class Database {
 	}
 
 	// add an entry
-	public long create(String name,String point) {
+	public long create(String name,String time,String point) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm",
 				Locale.ENGLISH);
 		Date now = new Date();
 		ContentValues args = new ContentValues();
 		args.put(KEY_NAME, name);
 		args.put(KEY_POINT, point);
-		
+		args.put(KEY_TIME, time);
 		args.put(KEY_CREATED, df.format(now.getTime()));
 		Log.v("success", "success");
 		return db.insert(DATABASE_TABLE, null, args);
@@ -128,10 +129,11 @@ public class Database {
 	}
 
 	// update
-	public boolean update(long rowId, String name,String point) {
+	public boolean update(long rowId, String name,String time,String point) {
 		Date now = new Date();
 		ContentValues args = new ContentValues();
 		args.put(KEY_POINT, name);
+		args.put(KEY_NAME, time);
 		args.put(KEY_NAME, point);
 		return db.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
 	}

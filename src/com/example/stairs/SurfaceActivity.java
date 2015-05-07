@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -44,13 +46,14 @@ public class SurfaceActivity extends SurfaceView implements
 	private int speedUp = 1, speedDown = 1;
 	private int gap = 300;
 	private int tmp_hit = 0, hit = 0;
-
+	private int timeTrans = 100;
+	
 	private LayoutInflater inflater;
 	private String[] rank = { "1", "1", "1" };
 	Database db;
 	Cursor mCursor;
 	FileIO io;
-
+	int timeGame = 0;
 	private int point = 0, tmp_point = 0;
 	private boolean direct = true;
 	private boolean start = false;
@@ -264,7 +267,7 @@ public class SurfaceActivity extends SurfaceView implements
 		paint.setAntiAlias(true); // remove edge effect
 		canvas.drawColor(Color.WHITE);
 		canvas.drawBitmap(line, 0, 0, paint);
-
+		
 		for (int i = 0; i < yList.size(); i++) {
 			if (stepList.get(i) == 0) { // on grass
 				if (onGrass.get(i) == false) {
@@ -317,7 +320,13 @@ public class SurfaceActivity extends SurfaceView implements
 				canvas.drawBitmap(left_sheep, xSheep, ySheep, paint);
 			}
 		}
-
+		
+		//	Draw time text
+		
+		paint.setTextSize(40);//設定字體大小
+		paint.setColor(Color.RED );//設定字體顏色
+		canvas.drawText("TIME:", 0, 40, paint);
+		canvas.drawText(String.valueOf((timeGame/timeTrans)), 110,40, paint);
 		getHolder().unlockCanvasAndPost(canvas);
 	}
 
@@ -326,6 +335,8 @@ public class SurfaceActivity extends SurfaceView implements
 		task = new TimerTask() {
 			@Override
 			public void run() {
+				timeGame +=2;
+				Log.d("time",String.valueOf(timeGame));
 				draw();
 				for (int i = 0; i < yList.size(); i++) {
 					yList.set(i, yList.get(i) - speedUp);
@@ -482,58 +493,7 @@ public class SurfaceActivity extends SurfaceView implements
 		}
 	}
 
-	public void showRankDialog() {
-
-		db = new Database(getContext());
-		db.open();
-		mCursor = db.getAll();
-		String rankNumber = getRank(db.getAll());
-		String[] from_column = new String[] { db.KEY_NAME, db.KEY_POINT };
-		int[] to_layout = new int[] { R.id.rank_tv_name, R.id.rank_tv_point };
-
-		// Now create a simple cursor adapter
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(getContext(),
-				R.layout.rank_row, mCursor, from_column, to_layout);
-
-		View customDialog = inflater.inflate(R.layout.input_rank_dialog, null);
-		final EditText editText = (EditText) customDialog
-				.findViewById(R.id.rank_edit_name);
-		ListView listView = (ListView) customDialog
-				.findViewById(R.id.listview_rank);
-		TextView showRankTv = (TextView) customDialog
-				.findViewById(R.id.rank_tv_currentrank);
-		TextView rankPointTv = (TextView) customDialog
-				.findViewById(R.id.rank_tv_point);
-		showRankTv.setText(rankNumber + "/" + (mCursor.getCount() + 1));
-		rankPointTv.setText(String.valueOf(point));
-		listView.setAdapter(adapter);
-		new AlertDialog.Builder(getContext())
-				.setView(customDialog)
-				.setNegativeButton("返回主選單",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								// TODO Auto-generated method stub
-							}
-
-						})
-				.setPositiveButton("新增排行",
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								// TODO Auto-generated method stub
-								//
-								db.create(editText.getText().toString(),
-										String.valueOf(point));
-								onDetachedFromWindow();
-							}
-
-						}).create().show();
-
-	}
+	
 
 	public String getRank(Cursor cursor) {
 		int rank = 1;
@@ -577,5 +537,65 @@ public class SurfaceActivity extends SurfaceView implements
 			}
 		}
 	};
+	public void showRankDialog() {
+		
+		db = new Database(getContext());
+		db.open();
+		mCursor = db.getAll();
+		String rankNumber = getRank(db.getAll());
+		String[] from_column = new String[] { db.KEY_NAME,db.KEY_TIME, db.KEY_POINT };
+		int[] to_layout = new int[] { R.id.rank_tv_name, R.id.rank_tv_time,R.id.rank_tv_point };
+		
+		// Now create a simple cursor adapter
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(getContext(),
+				R.layout.rank_row, mCursor, from_column, to_layout);
+		
+		View customDialog = inflater.inflate(R.layout.input_rank_dialog, null);
+		View listHead = inflater.inflate(R.layout.rank_row_head, null);
+		final EditText editText = (EditText) customDialog
+				.findViewById(R.id.rank_edit_name);
+		ListView listView = (ListView) customDialog
+				.findViewById(R.id.listview_rank);
+		TextView showRankTv = (TextView) customDialog
+				.findViewById(R.id.rank_tv_currentRank);
+		TextView rankPointTv = (TextView) customDialog
+				.findViewById(R.id.rank_tv_point);
+		TextView rankTimeTv = (TextView) customDialog
+				.findViewById(R.id.rank_tv_time);
+		showRankTv.setText(rankNumber + "/" + (mCursor.getCount() + 1));
+		rankPointTv.setText(String.valueOf(point));
+		rankTimeTv.setText(String.valueOf(timeGame/timeTrans));
+		listView.addHeaderView(listHead);
+		listView.setAdapter(adapter);
+		new AlertDialog.Builder(getContext())
+				.setView(customDialog)
+				.setNegativeButton("返回主選單",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// TODO Auto-generated method stub
+								Intent intent = new Intent(getContext(), MainActivity.class);
+								((Activity) getContext()).startActivity(intent);
+							}
 
+						})
+				.setPositiveButton("新增排行",
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// TODO Auto-generated method stub
+								//
+								db.create(editText.getText().toString(),String.valueOf(timeGame/timeTrans),
+										String.valueOf(point));
+								
+								Intent intent = new Intent(getContext(), MainActivity.class);
+								((Activity) getContext()).startActivity(intent);
+							}
+
+						}).create().show();
+		
+	}
 }
