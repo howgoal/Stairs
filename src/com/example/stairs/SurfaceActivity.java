@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -19,12 +22,21 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class SurfaceActivity extends SurfaceView implements
 		SurfaceHolder.Callback, SensorEventListener {
@@ -40,9 +52,18 @@ public class SurfaceActivity extends SurfaceView implements
 	private int speedUp = 1, speedDown = 1;
 	private int gap = 300;
 	private int tmp_hit = 0, hit = 0;
+	private int timeTrans = 100;
+	
+	private LayoutInflater inflater;
+	private String[] rank = { "1", "1", "1" };
+	Database db;
+	Cursor mCursor;
+	FileIO io;
+	int timeGame = 0;
 	private int point = 0, tmp_point = 0;
 	private boolean direct = true;
 	private boolean start = false;
+	private boolean restart = false;
 
 	ArrayList<Integer> xList;
 	ArrayList<Integer> yList;
@@ -56,7 +77,7 @@ public class SurfaceActivity extends SurfaceView implements
 	public SurfaceActivity(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
-
+		inflater = LayoutInflater.from(getContext());
 		surfHold = getHolder();
 		surfHold.addCallback(this);
 
@@ -66,9 +87,42 @@ public class SurfaceActivity extends SurfaceView implements
 		onGrass = new ArrayList<Boolean>();
 		onGate = new ArrayList<Boolean>();
 		threadSave = new Thread();
+	}
+
+	public void newGame() {
 		countX();
 		countY();
 		setStep();
+	}
+
+	public void reloadGame() {
+		// 讀取資料
+		io = new FileIO();
+		String x = io.readFile("dataX.txt");
+		String y = io.readFile("dataY.txt");
+		String step = io.readFile("dataStep.txt");
+		String loc = io.readFile("dataLocation.txt");
+		x = x.substring(0, x.length() - 1);
+		y = y.substring(0, y.length() - 1);
+		step = step.substring(0, step.length() - 1);
+		String[] xx = x.split(",");
+		String[] yy = y.split(",");
+		String[] steps = step.split(",");
+		String[] location = loc.split(",");
+		Log.i("x", String.valueOf(xx.length));
+		Log.i("y", String.valueOf(yy.length));
+		Log.i("s", String.valueOf(steps.length));
+		for (int i = 0; i < xx.length; i++) {
+			xList.add(Integer.parseInt(xx[i]));
+		}
+		for (int j = 0; j < yy.length; j++) {
+			yList.add(Integer.parseInt(yy[j]));
+		}
+		for (int k = 0; k < steps.length; k++) {
+			stepList.add(Integer.parseInt(steps[k]));
+		}
+		xSheep = Integer.parseInt(location[0]);
+		ySheep = Integer.parseInt(location[1]);
 	}
 
 	private void countX() {
@@ -94,40 +148,49 @@ public class SurfaceActivity extends SurfaceView implements
 				if (xSheep - xList.get(i) <= wSteps - 20
 						&& -hSheep + 30 <= xSheep - xList.get(i)) {
 					// Log.i("up", "up");
-					if (stepList.get(i) == 0) {
+					switch (stepList.get(i)) {
+					case 0:
 						onGrass.set(i, true);
-						point++;
-						 Log.d("point+1", String.valueOf(point));
-					} else {
+						break;
+					case 1:
+						onGate.set(i, true);
 						hit++;
 						ySheep -= speedUp;
-					}
-
-					if (stepList.get(i) == 1) {
-						onGate.set(i, true);
-						point--; // point will continually less (haven't solve)
-						 Log.d("point-1", String.valueOf(point));
+						break;
+					default:
+						hit++;
+						ySheep -= speedUp;
+						break;
 					}
 				}
 			}
 		}
 		if (hit == tmp_hit) {
 			ySheep += speedDown;
-		} else {
+		} else {// on
 			tmp_hit = hit;
 		}
 	}
 
 	public void setStep() {
 		stepList.add(2);
-		onGrass.add(false);
-		onGate.add(false);
 		for (int i = 1; i < 50; i++) {
 			int tmp = (int) (Math.random() * 5); // random 0~4
 			stepList.add(tmp);
+		}
+	}
+
+	public void setGrass() {
+		for (int i = 0; i < 50; i++) {
 			onGrass.add(false);
+		}
+	}
+
+	public void setGate() {
+		for (int i = 0; i < 50; i++) {
 			onGate.add(false);
 		}
+
 	}
 
 	public void checkEnd() {
@@ -135,12 +198,15 @@ public class SurfaceActivity extends SurfaceView implements
 		if (ySheep + 70 == deadline || ySheep == 65) {
 			end = true;
 		}
-		// Log.e(String.valueOf(this.getHeight()),
-		// String.valueOf(this.getWidth()));
+
 	}
 
 	public void setStart() {
 		start = true;
+	}
+
+	public void setRestart() {
+		restart = true;
 	}
 
 	public boolean getStart() {
@@ -153,6 +219,7 @@ public class SurfaceActivity extends SurfaceView implements
 
 	public boolean getEnd() {
 		return end;
+
 	}
 
 	public void draw() {
@@ -173,7 +240,7 @@ public class SurfaceActivity extends SurfaceView implements
 		paint.setAntiAlias(true); // remove edge effect
 		canvas.drawColor(Color.WHITE);
 		canvas.drawBitmap(line, 0, 0, paint);
-
+		
 		for (int i = 0; i < yList.size(); i++) {
 			if (stepList.get(i) == 0) { // on grass
 				if (onGrass.get(i) == false) {
@@ -189,7 +256,7 @@ public class SurfaceActivity extends SurfaceView implements
 				if (onGate.get(i) == true) {
 					canvas.drawBitmap(minus, xList.get(i) + 20,
 							yList.get(i) - 70, paint);
-			
+
 				}
 			} else { // normal
 				canvas.drawBitmap(steps, xList.get(i), yList.get(i), paint);
@@ -201,15 +268,26 @@ public class SurfaceActivity extends SurfaceView implements
 		} else {
 			canvas.drawBitmap(left_sheep, xSheep, ySheep, paint);
 		}
-
+		
+		//	Draw time text
+		
+		paint.setTextSize(40);//設定字體大小
+		paint.setColor(Color.RED );//設定字體顏色
+		canvas.drawText("TIME:", 0, 40, paint);
+		canvas.drawText(String.valueOf((timeGame/timeTrans)), 110,40, paint);
 		getHolder().unlockCanvasAndPost(canvas);
 	}
 
 	public void startTimer() {
+		Log.i("size", String.valueOf(xList.size()));
+		Log.i("size", String.valueOf(yList.size()));
+		Log.i("size", String.valueOf(stepList.size()));
 		timer = new Timer();
 		task = new TimerTask() {
 			@Override
 			public void run() {
+				timeGame +=2;
+				Log.d("time",String.valueOf(timeGame));
 				draw();
 				for (int i = 0; i < yList.size(); i++) {
 					yList.set(i, yList.get(i) - speedUp);
@@ -217,6 +295,15 @@ public class SurfaceActivity extends SurfaceView implements
 						yList.remove(i);
 						xList.remove(i);
 						stepList.remove(i);
+						if (onGrass.get(i) == true) {
+							point += 5;
+							Log.i("point+5", String.valueOf(point));
+						} else if (onGate.get(i) == true) {
+							point -= 1;
+							Log.i("point-1", String.valueOf(point));
+						} else {
+
+						}
 						onGrass.remove(i);
 						onGate.remove(i);
 						// Log.i("remove", "ok");
@@ -236,6 +323,23 @@ public class SurfaceActivity extends SurfaceView implements
 				if (end == true) {
 					stopTimer();
 
+					for (int i = 0; i < yList.size(); i++) {
+						if (onGrass.get(i) == true) {
+							point += 5;
+							Log.i("point+5", String.valueOf(point));
+						} else if (onGate.get(i) == true) {
+							point -= 1;
+							Log.i("point-1", String.valueOf(point));
+						} else {
+
+						}
+					}
+
+					Message msg = new Message();
+					msg.what = 1;
+					uiHandler.sendMessage(msg);
+					
+					
 				}
 			}
 		};
@@ -259,20 +363,16 @@ public class SurfaceActivity extends SurfaceView implements
 		tmp_point = point;
 		Log.d("pause point", String.valueOf(point));
 		Log.d("ZR", "in pause");
-		try {
-			threadSave.join(); // wait until other thread finish
-			Log.d("ZR", "in pause end");
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		// while(true){ // check every time
-		// try {
-		// threadSave.join();
-		// Log.d("ZR", "in pause end");
-		// } catch (InterruptedException e) {
-		// e.printStackTrace();
-		// }
-		// }
+		storeData();
+		timer.cancel();
+	}
+
+	public void storeData() {
+		io = new FileIO();
+		io.writeFile("dataX.txt", xList);
+		io.writeFile("dataY.txt", yList);
+		io.writeFile("dataStep.txt", stepList);
+		io.writeLocation("dataLocation.txt", xSheep, ySheep);
 	}
 
 	@Override
@@ -285,17 +385,21 @@ public class SurfaceActivity extends SurfaceView implements
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
-		Log.d("ZR", "surface create");
+		Log.i("ZR", "surface create");
 		sensorManager = (SensorManager) getContext().getSystemService(
 				Context.SENSOR_SERVICE);
 		sensorManager.registerListener(this,
 				sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 				SensorManager.SENSOR_DELAY_NORMAL);
 
-		if (start == true) {
-			startTimer();
+		if (start) {
+			newGame();
+		} else if (restart) {
+			reloadGame();
 		}
-		// startTimer();
+		setGate();
+		setGrass();
+		startTimer();
 	}
 
 	@Override
@@ -342,4 +446,109 @@ public class SurfaceActivity extends SurfaceView implements
 		}
 	}
 
+	
+
+	public String getRank(Cursor cursor) {
+		int rank = 1;
+		if (cursor.getCount() != 0) {
+			cursor.moveToFirst();
+			int temp = Integer.parseInt(cursor.getString(2));
+			if (point > temp) {
+				return String.valueOf(rank);
+			}// 將指標移至第一筆資料
+			else {
+				rank += 1;
+				while (cursor.moveToNext()) {
+					temp = Integer.parseInt(cursor.getString(2));
+					if (point > temp) {
+						break;
+					}
+					rank += 1;
+				}
+			}
+
+		}
+
+		return String.valueOf(rank);
+	}
+
+	private Handler uiHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			// 0 => stop,
+			// 1=> game over show rank
+			switch (msg.what) {
+			case 0:
+				// game stop code
+				break;
+			case 1:
+				// 1=> game over show rank
+				showRankDialog();
+				break;
+			default:
+				break;
+			}
+		}
+	};
+	public void showRankDialog() {
+		
+		db = new Database(getContext());
+		db.open();
+		mCursor = db.getAll();
+		String rankNumber = getRank(db.getAll());
+		String[] from_column = new String[] { db.KEY_NAME,db.KEY_TIME, db.KEY_POINT };
+		int[] to_layout = new int[] { R.id.rank_tv_name, R.id.rank_tv_time,R.id.rank_tv_point };
+		
+		// Now create a simple cursor adapter
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(getContext(),
+				R.layout.rank_row, mCursor, from_column, to_layout);
+		
+		View customDialog = inflater.inflate(R.layout.input_rank_dialog, null);
+		View listHead = inflater.inflate(R.layout.rank_row_head, null);
+		final EditText editText = (EditText) customDialog
+				.findViewById(R.id.rank_edit_name);
+		ListView listView = (ListView) customDialog
+				.findViewById(R.id.listview_rank);
+		TextView showRankTv = (TextView) customDialog
+				.findViewById(R.id.rank_tv_currentRank);
+		TextView rankPointTv = (TextView) customDialog
+				.findViewById(R.id.rank_tv_point);
+		TextView rankTimeTv = (TextView) customDialog
+				.findViewById(R.id.rank_tv_time);
+		showRankTv.setText(rankNumber + "/" + (mCursor.getCount() + 1));
+		rankPointTv.setText(String.valueOf(point));
+		rankTimeTv.setText(String.valueOf(timeGame/timeTrans));
+		listView.addHeaderView(listHead);
+		listView.setAdapter(adapter);
+		new AlertDialog.Builder(getContext())
+				.setView(customDialog)
+				.setNegativeButton("返回主選單",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// TODO Auto-generated method stub
+								Intent intent = new Intent(getContext(), MainActivity.class);
+								((Activity) getContext()).startActivity(intent);
+							}
+
+						})
+				.setPositiveButton("新增排行",
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// TODO Auto-generated method stub
+								//
+								db.create(editText.getText().toString(),String.valueOf(timeGame/timeTrans),
+										String.valueOf(point));
+								
+								Intent intent = new Intent(getContext(), MainActivity.class);
+								((Activity) getContext()).startActivity(intent);
+							}
+
+						}).create().show();
+		
+	}
 }
