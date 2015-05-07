@@ -391,7 +391,7 @@ public class SurfaceActivity extends SurfaceView implements
 				}
 			}
 		};
-		timer.schedule(task, 10, 10); // do task per 0.001 second
+		timer.schedule(task, 10, 10); // do task per 0.01 second
 	}
 
 	public void stopTimer() {
