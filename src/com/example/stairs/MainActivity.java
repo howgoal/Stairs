@@ -91,13 +91,12 @@ public class MainActivity extends Activity {
 				Intent intent3 = new Intent();
 				intent3.setClass(MainActivity.this,RankActivity.class);
 				startActivity(intent3);
-				MainActivity.this.finish();
 				break;
 			case R.id.btn_story:
 
 				break;
 			case R.id.btn_leave:
-
+				MainActivity.this.finish();
 				break;
 
 			default:
@@ -109,6 +108,7 @@ public class MainActivity extends Activity {
 
 	private void checkNote() {
 		int points = surfaceView.getPoint();
+		//Log.i("~~~", String.valueOf(surfaceView.getPoint()));
 		if (points < 0) {
 			devil = true;
 		} else if (points > 50) {

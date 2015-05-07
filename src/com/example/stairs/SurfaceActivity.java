@@ -254,8 +254,20 @@ public class SurfaceActivity extends SurfaceView implements
 				R.drawable.left_sheep);
 		Bitmap right_sheep = BitmapFactory.decodeResource(res,
 				R.drawable.right_sheep);
-		Bitmap test_sheep = BitmapFactory.decodeResource(res,
-				R.drawable.test_sheep);
+		Bitmap left_good = BitmapFactory.decodeResource(res,
+				R.drawable.left_sheep_good);
+		Bitmap right_good = BitmapFactory.decodeResource(res,
+				R.drawable.right_sheep_good);
+		Bitmap left_bad = BitmapFactory.decodeResource(res,
+				R.drawable.left_sheep_bad);
+		Bitmap right_bad = BitmapFactory.decodeResource(res,
+				R.drawable.right_sheep_bad);
+		Bitmap left_eat = BitmapFactory.decodeResource(res,
+				R.drawable.left_sheep_eat);
+		Bitmap right_eat = BitmapFactory.decodeResource(res,
+				R.drawable.right_sheep_eat);
+//		Bitmap test_sheep = BitmapFactory.decodeResource(res,
+//				R.drawable.test_sheep);
 		Paint paint = new Paint();
 		paint.setAntiAlias(true); // remove edge effect
 		canvas.drawColor(Color.WHITE);
@@ -293,22 +305,22 @@ public class SurfaceActivity extends SurfaceView implements
 
 		if (direct == true) {
 			if (point > 50) {
-				canvas.drawBitmap(right_sheep, xSheep, ySheep, paint);
+				canvas.drawBitmap(right_good, xSheep, ySheep, paint);
 			} else if (point < 0) {
-				canvas.drawBitmap(right_sheep, xSheep, ySheep, paint);
+				canvas.drawBitmap(right_bad, xSheep, ySheep, paint);
 			} else if (meatSheep == true) {
-				canvas.drawBitmap(test_sheep, xSheep, ySheep, paint);
+				canvas.drawBitmap(right_eat, xSheep, ySheep, paint);
 			} else {
 				canvas.drawBitmap(right_sheep, xSheep, ySheep, paint);
 			}
 
 		} else {
 			if (point > 50) {
-				canvas.drawBitmap(left_sheep, xSheep, ySheep, paint);
+				canvas.drawBitmap(left_good, xSheep, ySheep, paint);
 			} else if (point < 0) {
-				canvas.drawBitmap(left_sheep, xSheep, ySheep, paint);
+				canvas.drawBitmap(left_bad, xSheep, ySheep, paint);
 			} else if (meatSheep == true) {
-				canvas.drawBitmap(test_sheep, xSheep, ySheep, paint);
+				canvas.drawBitmap(left_eat, xSheep, ySheep, paint);
 			} else {
 				canvas.drawBitmap(left_sheep, xSheep, ySheep, paint);
 			}
