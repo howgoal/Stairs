@@ -1,23 +1,17 @@
 package com.example.stairs;
 
 import android.app.Activity;
-import android.app.ActionBar;
-import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 
 public class GameActivity extends Activity {
 
 	SurfaceActivity surfaceView;
 	Bundle bundle;
 	Boolean CONTINUE;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -27,15 +21,14 @@ public class GameActivity extends Activity {
 		CONTINUE = bundle.getBoolean("CONTINUE");
 
 	}
-	
+
 	@Override
 	protected void onStart() {
 		super.onStart();
 		Log.i("ZR", "game in start");
 		if (CONTINUE) {
 			surfaceView.setRestart();
-		}
-		else {
+		} else {
 			surfaceView.setStart();
 		}
 		surfaceView.resume();
@@ -46,21 +39,21 @@ public class GameActivity extends Activity {
 		super.onPause();
 		surfaceView.pause();
 		Log.i("ZR", "game in pause");
-		//surfaceView.pause();
+		// surfaceView.pause();
 
 		// int point = surfaceView.getPoint();
 		// Log.i("###", String.valueOf(point));
 	}
+
 	@Override
 	protected void onStop() {
 		super.onStop();
 		Log.i("ZR", "game in stop");
-		//surfaceView.pause();
+		// surfaceView.pause();
 
 		// int point = surfaceView.getPoint();
 		// Log.i("###", String.valueOf(point));
 	}
-	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

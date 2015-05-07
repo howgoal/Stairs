@@ -1,12 +1,10 @@
 package com.example.stairs;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -22,19 +20,15 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.Message;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class SurfaceActivity extends SurfaceView implements
 		SurfaceHolder.Callback, SensorEventListener {
@@ -109,9 +103,6 @@ public class SurfaceActivity extends SurfaceView implements
 		String[] yy = y.split(",");
 		String[] steps = step.split(",");
 		String[] location = loc.split(",");
-		Log.i("x", String.valueOf(xx.length));
-		Log.i("y", String.valueOf(yy.length));
-		Log.i("s", String.valueOf(steps.length));
 		for (int i = 0; i < xx.length; i++) {
 			xList.add(Integer.parseInt(xx[i]));
 		}
@@ -147,7 +138,6 @@ public class SurfaceActivity extends SurfaceView implements
 			if (Math.abs(ySheep + hSheep - yList.get(i)) < 2) {
 				if (xSheep - xList.get(i) <= wSteps - 20
 						&& -hSheep + 30 <= xSheep - xList.get(i)) {
-					// Log.i("up", "up");
 					switch (stepList.get(i)) {
 					case 0:
 						onGrass.set(i, true);
@@ -199,7 +189,7 @@ public class SurfaceActivity extends SurfaceView implements
 		}
 
 	}
-	
+
 	public void setMeat() {
 		for (int i = 0; i < 500; i++) {
 			onMeat.add(false);
@@ -249,7 +239,8 @@ public class SurfaceActivity extends SurfaceView implements
 		Bitmap meat = BitmapFactory.decodeResource(res, R.drawable.meat);
 		Bitmap back = BitmapFactory.decodeResource(res, R.drawable.back);
 		Bitmap plus = BitmapFactory.decodeResource(res, R.drawable.plus);
-		Bitmap plus_ten = BitmapFactory.decodeResource(res, R.drawable.plus_ten);
+		Bitmap plus_ten = BitmapFactory
+				.decodeResource(res, R.drawable.plus_ten);
 		Bitmap minus = BitmapFactory.decodeResource(res, R.drawable.minus);
 		Bitmap left_sheep = BitmapFactory.decodeResource(res,
 				R.drawable.left_sheep);
@@ -267,8 +258,8 @@ public class SurfaceActivity extends SurfaceView implements
 				R.drawable.left_sheep_meat);
 		Bitmap right_eat = BitmapFactory.decodeResource(res,
 				R.drawable.right_sheep_meat);
-//		Bitmap test_sheep = BitmapFactory.decodeResource(res,
-//				R.drawable.test_sheep);
+		// Bitmap test_sheep = BitmapFactory.decodeResource(res,
+		// R.drawable.test_sheep);
 		Paint paint = new Paint();
 		paint.setAntiAlias(true); // remove edge effect
 		canvas.drawColor(Color.WHITE);
@@ -296,8 +287,8 @@ public class SurfaceActivity extends SurfaceView implements
 				} else {
 					meatSheep = true;
 					canvas.drawBitmap(back, xList.get(i), yList.get(i), paint);
-					canvas.drawBitmap(plus_ten, xList.get(i) + 60, yList.get(i),
-							paint);
+					canvas.drawBitmap(plus_ten, xList.get(i) + 60,
+							yList.get(i), paint);
 				}
 			} else { // normal
 				canvas.drawBitmap(steps, xList.get(i), yList.get(i), paint);
@@ -331,9 +322,6 @@ public class SurfaceActivity extends SurfaceView implements
 	}
 
 	public void startTimer() {
-		Log.i("size", String.valueOf(xList.size()));
-		Log.i("size", String.valueOf(yList.size()));
-		Log.i("size", String.valueOf(stepList.size()));
 		timer = new Timer();
 		task = new TimerTask() {
 			@Override
@@ -360,7 +348,6 @@ public class SurfaceActivity extends SurfaceView implements
 						onGrass.remove(i);
 						onGate.remove(i);
 						onMeat.remove(i);
-						// Log.i("remove", "ok");
 					}
 				}
 
@@ -391,7 +378,7 @@ public class SurfaceActivity extends SurfaceView implements
 				}
 			}
 		};
-		timer.schedule(task, 10, 10); // do task per 0.01 second
+		timer.schedule(task, 1, 1); // do task per 0.01 second
 	}
 
 	public void stopTimer() {
@@ -542,7 +529,7 @@ public class SurfaceActivity extends SurfaceView implements
 								db.create(editText.getText().toString(),
 										String.valueOf(point));
 								onDetachedFromWindow();
-								}
+							}
 
 						}).create().show();
 
