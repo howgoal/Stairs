@@ -17,6 +17,7 @@ public class GameActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		surfaceView = new SurfaceActivity(this);
 		setContentView(surfaceView);
+		getActionBar().hide();
 		bundle = this.getIntent().getExtras();
 		CONTINUE = bundle.getBoolean("CONTINUE");
 
