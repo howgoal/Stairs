@@ -1,5 +1,7 @@
 package com.example.stairs;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -11,14 +13,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	boolean angel = false;
 	boolean devil = false;
 	boolean meat = false;
+	boolean CONTINUE = false;
 
 	SurfaceActivity surfaceView;
 	Bundle bundle;
+	File file;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,16 +64,22 @@ public class MainActivity extends Activity {
 				// setContentView(surfaceView);
 				Intent intent = new Intent();
 				intent.setClass(MainActivity.this, GameActivity.class);
-				bundle.putBoolean("CONTINUE", false);
+				bundle.putBoolean("CONTINUE", CONTINUE);
 				intent.putExtras(bundle);
 				startActivity(intent);
 				break;
 			case R.id.btn_continue:
-				Intent intent2 = new Intent();
-				intent2.setClass(MainActivity.this, GameActivity.class);
-				bundle.putBoolean("CONTINUE", true);
-				intent2.putExtras(bundle);
-				startActivity(intent2);
+				checkData();
+				if (CONTINUE) {
+					Intent intent2 = new Intent();
+					intent2.setClass(MainActivity.this, GameActivity.class);
+					bundle.putBoolean("CONTINUE", CONTINUE);
+					intent2.putExtras(bundle);
+					startActivity(intent2);
+				} else {
+					Toast.makeText(MainActivity.this, "請開始新遊戲",
+							Toast.LENGTH_SHORT).show();
+				}
 				break;
 			case R.id.btn_note:
 				checkNote();
@@ -115,6 +126,15 @@ public class MainActivity extends Activity {
 			meat = true;
 		} else {
 
+		}
+	}
+
+	public void checkData() {
+		file = new File("/sdcard/dataX.txt");
+		if (file.exists()) {
+			CONTINUE = true;
+		} else {
+			CONTINUE = false;
 		}
 	}
 

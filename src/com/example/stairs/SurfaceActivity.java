@@ -1,5 +1,6 @@
 package com.example.stairs;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -50,6 +51,7 @@ public class SurfaceActivity extends SurfaceView implements
 	Database db;
 	Cursor mCursor;
 	FileIO io;
+	File file;
 
 	private int point = 0, tmp_point = 0;
 	private boolean direct = true;
@@ -394,11 +396,14 @@ public class SurfaceActivity extends SurfaceView implements
 	}
 
 	public void pause() {
-		end = true; // modify later
 		tmp_point = point;
 		Log.d("pause point", String.valueOf(point));
 		Log.d("ZR", "in pause");
-		storeData();
+		if (end) {
+			delData();
+		} else {
+			storeData();
+		}
 		timer.cancel();
 	}
 
@@ -408,6 +413,19 @@ public class SurfaceActivity extends SurfaceView implements
 		io.writeFile("dataY.txt", yList);
 		io.writeFile("dataStep.txt", stepList);
 		io.writeLocation("dataLocation.txt", xSheep, ySheep);
+	}
+
+	public void delData() {
+
+		file = new File("/sdcard/dataX.txt");
+		file.delete();
+		file = new File("/sdcard/dataY.txt");
+		file.delete();
+		file = new File("/sdcard/dataStep.txt");
+		file.delete();
+		file = new File("/sdcard/dataLocation.txt");
+		file.delete();
+
 	}
 
 	@Override
