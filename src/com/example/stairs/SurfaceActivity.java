@@ -516,14 +516,14 @@ public class SurfaceActivity extends SurfaceView implements
 		int rank = 1;
 		if (cursor.getCount() != 0) {
 			cursor.moveToFirst();
-			int temp = Integer.parseInt(cursor.getString(2));
+			int temp = Integer.parseInt(cursor.getString(3));
 			if (point > temp) {
 				return String.valueOf(rank);
 			}// 將指標移至第一筆資料
 			else {
 				rank += 1;
 				while (cursor.moveToNext()) {
-					temp = Integer.parseInt(cursor.getString(2));
+					temp = Integer.parseInt(cursor.getString(3));
 					if (point > temp) {
 						break;
 					}
