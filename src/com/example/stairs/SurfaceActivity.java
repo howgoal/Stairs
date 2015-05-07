@@ -256,17 +256,17 @@ public class SurfaceActivity extends SurfaceView implements
 		Bitmap right_sheep = BitmapFactory.decodeResource(res,
 				R.drawable.right_sheep);
 		Bitmap left_good = BitmapFactory.decodeResource(res,
-				R.drawable.left_sheep_good);
+				R.drawable.left_sheep_angel);
 		Bitmap right_good = BitmapFactory.decodeResource(res,
-				R.drawable.right_sheep_good);
+				R.drawable.right_sheep_angel);
 		Bitmap left_bad = BitmapFactory.decodeResource(res,
-				R.drawable.left_sheep_bad);
+				R.drawable.left_sheep_devil);
 		Bitmap right_bad = BitmapFactory.decodeResource(res,
-				R.drawable.right_sheep_bad);
+				R.drawable.right_sheep_devil);
 		Bitmap left_eat = BitmapFactory.decodeResource(res,
-				R.drawable.left_sheep_eat);
+				R.drawable.left_sheep_meat);
 		Bitmap right_eat = BitmapFactory.decodeResource(res,
-				R.drawable.right_sheep_eat);
+				R.drawable.right_sheep_meat);
 //		Bitmap test_sheep = BitmapFactory.decodeResource(res,
 //				R.drawable.test_sheep);
 		Paint paint = new Paint();
@@ -305,7 +305,7 @@ public class SurfaceActivity extends SurfaceView implements
 		}
 
 		if (direct == true) {
-			if (point > 50) {
+			if (point > 100) {
 				canvas.drawBitmap(right_good, xSheep, ySheep, paint);
 			} else if (point < 0) {
 				canvas.drawBitmap(right_bad, xSheep, ySheep, paint);
@@ -316,7 +316,7 @@ public class SurfaceActivity extends SurfaceView implements
 			}
 
 		} else {
-			if (point > 50) {
+			if (point > 100) {
 				canvas.drawBitmap(left_good, xSheep, ySheep, paint);
 			} else if (point < 0) {
 				canvas.drawBitmap(left_bad, xSheep, ySheep, paint);

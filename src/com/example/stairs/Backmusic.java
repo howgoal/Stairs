@@ -18,7 +18,6 @@ public class Backmusic extends Service{
 	}
 	
 	@Override 
-
 	public void onStart(Intent intent, int startId) { 
 		
 		// 開始播放音樂 
@@ -74,7 +73,6 @@ public class Backmusic extends Service{
 	}
 	
 	@Override 
-
 	public void onCreate() { 
 		
 		try {
@@ -100,10 +98,8 @@ public class Backmusic extends Service{
 	}
 	
 	@Override
-
 	public void onDestroy() {
 		// 服務停止時停止播放音樂並釋放資源
-
 		mp.stop();
 
 		mp.release();

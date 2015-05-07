@@ -128,11 +128,7 @@ public class NoteActivity extends Activity {
 
 	@Override
 	public void onBackPressed() {
-		Intent intent = new Intent();
-		intent.setClass(NoteActivity.this, MainActivity.class);
-		startActivity(intent);
-		NoteActivity.this.finish();
-		init();
+		finish();
 	}
 
 }

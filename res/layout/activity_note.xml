@@ -51,7 +51,7 @@
                 android:layout_weight="0.5"
                 android:scaleType="fitCenter"
                 android:background="#00000000"
-                android:src="@drawable/sheep_devil_not" />
+                android:src="@drawable/sheep_devil" />
 
             <ImageButton
                 android:id="@+id/sheep_meat"
@@ -60,7 +60,7 @@
                 android:layout_weight="0.5"
                 android:scaleType="fitCenter"
                 android:background="#00000000"
-                android:src="@drawable/sheep_meat_not" />
+                android:src="@drawable/sheep_meat" />
 
         </LinearLayout>
         
